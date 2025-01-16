@@ -3,6 +3,7 @@
 import { useAuth } from "../providers/AuthProvider"
 import { MainNav } from "./main-nav";
 import { MobileNav } from "./mobile-nav";
+import { UserNav } from "./user-nav";
 
 export const Header = () => {
     const {user} = useAuth();
@@ -16,7 +17,7 @@ export const Header = () => {
                 <MobileNav className='md:hidden' isAuthenticated={isAuthenticated}/>
                 {isAuthenticated && (
                     <div className='flex flex-1 items-center justify-end space-x-4'>
-autenticado
+                        <UserNav />
                     </div>
                 )}
             </div>

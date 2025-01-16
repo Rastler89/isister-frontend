@@ -24,9 +24,8 @@ export const MainNav = ({className,isAuthenticated,...props}:MainNavProps) => {
                             href='/pets'
                             className='flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary'
                         >
-                            <PawPrint className='h-4 w-4 mr-2'>
-                                Mascotas
-                            </PawPrint>
+                            <PawPrint className='h-4 w-4 mr-2' />
+                            Mascotas
                         </Link>
                     </>
                 )}
