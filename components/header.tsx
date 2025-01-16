@@ -9,7 +9,7 @@ import { UserNav } from "./user-nav";
 export const Header = () => {
     const {user} = useAuth();
 
-    const isAuthenticated = (user != null && user != undefined) ? true : false;
+    const isAuthenticated = (user != null && user != undefined)
 
     return (
         <header className='sticky top-0 z-50 w-full border-b border-green-100 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60'>
