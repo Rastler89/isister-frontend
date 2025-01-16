@@ -29,6 +29,6 @@ export const MainNav = ({className,isAuthenticated,...props}:MainNavProps) => {
                         </Link>
                     </>
                 )}
-            </nav>
+        </nav>
     )
 }

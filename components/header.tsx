@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuth } from "../providers/AuthProvider"
+import { EntryNav } from "./entry-nav";
 import { MainNav } from "./main-nav";
 import { MobileNav } from "./mobile-nav";
 import { UserNav } from "./user-nav";
@@ -15,11 +16,14 @@ export const Header = () => {
             <div className='container flex h-14 items-center max-w-7xl mx-auto px-4'>
                 <MainNav className='hidden md:flex' isAuthenticated={isAuthenticated}/>
                 <MobileNav className='md:hidden' isAuthenticated={isAuthenticated}/>
-                {isAuthenticated && (
-                    <div className='flex flex-1 items-center justify-end space-x-4'>
+                <div className='flex flex-1 items-center justify-end space-x-4'>
+                {isAuthenticated ? (
                         <UserNav />
-                    </div>
-                )}
+                    ) : (
+                        <EntryNav />
+                    )}
+                </div>
+
             </div>
         </header>
     )
