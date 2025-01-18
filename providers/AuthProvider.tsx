@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation"
 import { createContext, useContext, useEffect, useState } from "react"
+import { jwtDecode } from "jwt-decode"
 
 interface User {
     id: string
@@ -11,7 +12,7 @@ interface User {
 interface AuthContextType {
     user: User | null
     login: (email: string, password: string) => Promise<void>
-    register: (email: string, password: string, name: string) => Promise<void>
+    register: (email: string, password: string, name: string, password_confirmation: string) => Promise<void>
     logout: () => void
 }
 
@@ -35,34 +36,75 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     }, [pathname, router])
 
     const login = async (email:string, password: string) => {
-        await new Promise(resolve => setTimeout(resolve,1000))
+        try {
+            const response = await fetch('http://localhost/oauth/token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: email,
+                    password: password,
+                    client_id: '2',
+                    client_secret: 'c1QmHMdGqmxyl7Gv2UlWdlqRgyTLT3UJ1uI0jtr6',
+                    grant_type: 'password'
+                })
+            })
 
-        //TODO: validate user
-        const mockUser = {
-            id: "1",
-            email,
-            name: "Usuario Demo"
-          }
-          
-          localStorage.setItem("user", JSON.stringify(mockUser))
-          setUser(mockUser)
-          router.push("/")
+            if(!response.ok) {
+                throw new Error('Invalid login credentials')
+            }
+
+            const data = await response.json()
+
+            localStorage.setItem('access_token',data.access_token)
+            localStorage.setItem('refresh_token',data.refresh_token)
+            
+            const decodedToken:any = jwtDecode(data.access_token)
+
+            console.log(decodedToken)
+
+            const user = {
+                id: decodedToken.sub,
+                email,
+                name: decodedToken.name
+            }
+
+            localStorage.setItem('user',JSON.stringify(user))
+            setUser(user)
+
+            router.push('/home')
+        } catch(error) {
+            console.error('Login failed: ', error)
+        }
     }
 
-    const register = async (email: string, password: string, name: string) => {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        
-        // In a real app, create user in your backend
-        const mockUser = {
-          id: "1",
-          email,
-          name
+    const register = async (email: string, password: string, name: string, password_confirmation: string) => {
+        try {
+            const response = await fetch('http://localhost/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: password,
+                    password_confirmation: password_confirmation,
+                    json: 'true'
+                })
+            })
+
+            if (!response.ok) {
+                throw new Error('Registration failed')
+            }
+
+            const data = await response.json()
+
+            router.push('/auth/login')
+        } catch(error) {
+            console.error('Registration failed: ',error)
         }
-        
-        localStorage.setItem("user", JSON.stringify(mockUser))
-        setUser(mockUser)
-        router.push("/")
     }
 
     const logout = () => {

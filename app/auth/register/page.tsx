@@ -23,9 +23,10 @@ const RegisterPage = () => {
         const email = formData.get('email') as string
         const password = formData.get('password') as string
         const name = formData.get('name') as string
+        const password_confirmation = formData.get('password_confirmation') as string
         
         try {
-            await register(email,password,name)
+            await register(email,password,name,password_confirmation)
             toast({
                 title: '¡Registro completado!',
                 description: 'Tu cuenta ha sido creada correctamente. Revise su correo por favor',
@@ -89,6 +90,17 @@ const RegisterPage = () => {
                             disabled={isLoading}
                         />
                     </div>
+                    <div className='space-y-2'>
+                        <Label htmlFor='password'>Repita contraseña</Label>
+                        <Input
+                            id='password_confirmation'
+                            name='password_confirmation'
+                            type='password'
+                            required
+                            disabled={isLoading}
+                        />
+                    </div>
+                    <Input id='honey' name='honey' className='honey' />
                     <Button
                         type='submit'
                         className='w-full bg-green-600 hover:bg-green-700'
