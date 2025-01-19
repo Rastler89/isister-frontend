@@ -24,6 +24,27 @@ const RegisterPage = () => {
         const password = formData.get('password') as string
         const name = formData.get('name') as string
         const password_confirmation = formData.get('password_confirmation') as string
+
+        if (password !== password_confirmation) {
+            setIsLoading(false)
+            toast({
+                variant: 'destructive',
+                title: 'Error en las contraseñas',
+                description: 'Las contraseñas no coinciden. Por favor verifica e inténtalo de nuevo.'
+            })
+            return
+        }
+
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+        if (!passwordRegex.test(password)) {
+            setIsLoading(false)
+            toast({
+                variant: 'destructive',
+                title: 'Contraseña no válida',
+                description: 'La contraseña debe tener al menos 8 caracteres, incluir letras mayúsculas, minúsculas, un número y un carácter especial.',
+            })
+            return
+        }
         
         try {
             await register(email,password,name,password_confirmation)
