@@ -7,6 +7,8 @@ import { Plus, Upload } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Label } from "./ui/label"
 import { Input } from "./ui/input"
+import { Select, SelectContent, SelectItem, SelectValue } from "./ui/select"
+import { SelectTrigger } from "@radix-ui/react-select"
 
 interface AddPetModalProps {
     onAdd: (pet: any) => void
@@ -96,7 +98,49 @@ const AddPetModal = ({onAdd}: AddPetModalProps) => {
 
                         <div className='grid gap-2'>
                             <Label htmlFor='type'>Tipo de mascota</Label>
-                            
+                            <Select name='type' required defaultValue=''>
+                                <SelectTrigger>
+                                    <SelectValue placeholder='Selecciona el tipo' />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value='dog'>Perro</SelectItem>
+                                    <SelectItem value='cat'>Gato</SelectItem>
+                                    <SelectItem value='rabbit'>Conejo</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className='grid gap-2'>
+                            <Label htmlFor='breed'>Raza</Label>
+                            <Input 
+                                id='breed'
+                                name='breed'
+                                placeholder='Raza de tu mascota'
+                                required
+                            />
+                        </div>
+
+                        <div className='grid gap-2'>
+                            <Label htmlFor='birthDate'>Fecha de nacimiento</Label>
+                            <Input
+                                id='birthDate'
+                                name='birthDate'
+                                type='date'
+                                required
+                            />
+                        </div>
+
+                        <div className='flex justify-end gap-4'>
+                            <DialogTrigger asChild>
+                                <Button type='button' variant='outline'>Cancelar</Button>
+                            </DialogTrigger>
+                            <Button
+                                type='submit'
+                                className='bg-green-600 hover:bg-green-700'
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Añadiendo...' : 'Añadir mascota'}
+                            </Button>
                         </div>
                     </div>
                 </form>

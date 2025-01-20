@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import AddPetModal from "./add-pet-modal"
+import { Search } from "lucide-react"
+import { Input } from "./ui/input"
 
 interface Pet {
     id: number
@@ -16,6 +18,7 @@ interface Pet {
 
 const PetGrid = () => {
     const [pets, setPets] = useState<Pet[]>([])
+    const [searchQuery, setSearchQuery] = useState("")
 
 
     const handleAddPet = (newPet: any) => {
@@ -32,6 +35,18 @@ const PetGrid = () => {
                 </p>
             </div>
             <AddPetModal onAdd={handleAddPet} />
+        </div>
+
+        <div className='flex items-center mb-6'>
+            <div className='relative flex-1 max-w-sm'>
+                <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground' />
+                <Input
+                    placeholder='Buscar por nombre...'
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className='pl-9'
+                />
+            </div>
         </div>
        </div>
     )
