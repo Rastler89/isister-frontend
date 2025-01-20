@@ -73,7 +73,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
             localStorage.setItem('user',JSON.stringify(user))
             setUser(user)
 
-            router.push('/home')
+            router.push('/pets')
         } catch(error) {
             console.error('Login failed: ', error)
         }
