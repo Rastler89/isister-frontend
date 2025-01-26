@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
 import { AlertCircle, Apple, Camera, Dog, Edit2, Footprints, Plus, Save, Scale, Stethoscope, Syringe, X } from 'lucide-react'
 import { Button } from './ui/button'
@@ -18,46 +18,79 @@ import { ImageUploadModal } from './image-upload-modal'
 import { AddRecordModal } from './add-record-modal'
 import { ConfirmationDialog } from './confirmation-dialog'
 import { EditScheduleModal } from './edit-schedule-modal'
+import Pet from '../interfaces/Pet'
 
 interface PetHealthProps {
     id: string
 }
 
 const PetHealthTracker = ({id}: PetHealthProps) => {
+    const [pet, setPet] = useState<Pet>()
+    const [loading, setLoading] = useState(true)
     const [isEditing, setIsEditing] = useState(false)
     const [showSaveDialog, setShowSaveDialog] = useState(false)
     const [imageModalOpen, setImageModalOpen] = useState(false)
     const [addModalOpen, setAddModalOpen] = useState(false)
     const [addModalType, setAddModalType] = useState<'vaccine' | 'health' | 'walk' | 'meal' | 'weight' | 'allergy'>(
-      'vaccine',
+      'allergy',
     )
+
+    useEffect(() => {
+            const fetchPet = async () => {
+                setLoading(true)
+                try {
+                    let url = ''
+                    if(id!==undefined) {
+                        url = `http://localhost/api/pets/${id}`
+                     
+    
+                        const response = await fetch(url, {
+                            cache: 'no-store',
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                Authorization: `Bearer ${localStorage.getItem('access_token')}`
+                            }
+                        })
+                    
+    
+                        if(!response.ok) {
+                            throw new Error('Error en la petición')
+                        }
+                        const data = await response.json()
+                        setPet(data)
+                    }
+                } catch(error:any) {
+                    console.error(error.message)
+                } finally {
+                    setLoading(false)
+                }
+            }
+    
+            fetchPet()
+        }, [])
   
-    // Estado para los campos editables y su copia temporal
-    const [petData, setPetData] = useState({
-      birthDate: '2022-06-15',
-      character: 'friendly',
-      notes: 'Alérgica al pollo. Le encanta jugar con pelotas.',
-    })
-    const [tempPetData, setTempPetData] = useState(petData)
+    const [tempPetData, setTempPetData] = useState({ birthDate: '', character: '' })
   
     const handleEdit = () => {
-      setTempPetData(petData) // Guardar una copia temporal de los datos
-      setIsEditing(true)
+        setTempPetData({birthDate: String(pet?.birth || ''), character: String(pet?.character || '')}) // Guardar una copia temporal de los datos
+        setIsEditing(true)
     }
   
     const handleSave = () => {
-      setShowSaveDialog(true)
+        setShowSaveDialog(true)
     }
   
     const handleConfirmSave = () => {
-      setPetData(tempPetData)
-      setIsEditing(false)
-      setShowSaveDialog(false)
+        setPet(pet ? {...pet, birth: tempPetData.birthDate, character: tempPetData.character} : pet)
+        setIsEditing(false)
+        setShowSaveDialog(false)
     }
   
     const handleCancel = () => {
-      setTempPetData(petData) // Restaurar los datos originales
-      setIsEditing(false)
+        setPet(pet ? {...pet, birth: tempPetData.birthDate, character: tempPetData.character} : pet)
+        setIsEditing(false)
     }
   
     const handleAddRecord = (data: any) => {
@@ -66,8 +99,8 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
     }
   
     const openAddModal = (type: typeof addModalType) => {
-      setAddModalType(type)
-      setAddModalOpen(true)
+        setAddModalType(type)
+        setAddModalOpen(true)
     }
   
     const [records, setRecords] = useState({
@@ -186,8 +219,8 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                   </Button>
                 </div>
                 <div className='text-center'>
-                  <h3 className='text-2xl font-semibold'>Luna</h3>
-                  <p className='text-muted-foreground'>Border Collie</p>
+                  <h3 className='text-2xl font-semibold'>{pet?.name}</h3>
+                  <p className='text-muted-foreground'>{pet?.breed_es}</p>
                 </div>
               </div>
               <div className='space-y-4'>
@@ -196,35 +229,17 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                   <Input
                     id='birth'
                     type='date'
-                    value={isEditing ? tempPetData.birthDate : petData.birthDate}
+                    value={isEditing ? tempPetData.birthDate : pet?.birth}
                     onChange={(e) => setTempPetData({ ...tempPetData, birthDate: e.target.value })}
                     disabled={!isEditing}
                   />
                 </div>
                 <div className='space-y-2'>
                   <Label htmlFor='character'>Carácter</Label>
-                  <Select
-                    value={isEditing ? tempPetData.character : petData.character}
-                    onValueChange={(value) => setTempPetData({ ...tempPetData, character: value })}
-                    disabled={!isEditing}
-                  >
-                    <SelectTrigger id='character'>
-                      <SelectValue placeholder='Seleccionar carácter' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='friendly'>Amigable</SelectItem>
-                      <SelectItem value='shy'>Tímido</SelectItem>
-                      <SelectItem value='active'>Activo</SelectItem>
-                      <SelectItem value='calm'>Tranquilo</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className='space-y-2'>
-                  <Label htmlFor='notes'>Notas adicionales</Label>
                   <Textarea
-                    id='notes'
-                    value={isEditing ? tempPetData.notes : petData.notes}
-                    onChange={(e) => setTempPetData({ ...tempPetData, notes: e.target.value })}
+                    id='character'
+                    value={isEditing ? tempPetData.character : pet?.character}
+                    onChange={(e) => setTempPetData({ ...tempPetData, character: e.target.value })}
                     disabled={!isEditing}
                   />
                 </div>
@@ -235,6 +250,10 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
   
         <Tabs defaultValue='vaccines' className='space-y-4'>
           <TabsList className='grid grid-cols-2 md:grid-cols-6 gap-2 bg-green-50'>
+            <TabsTrigger value='allergies' className='flex items-center gap-2 data-[state=active]:bg-green-100/50'>
+              <AlertCircle className='h-4 w-4' />
+              Alergias
+            </TabsTrigger>
             <TabsTrigger value='vaccines' className='flex items-center gap-2 data-[state=active]:bg-green-100/50'>
               <Syringe className='h-4 w-4' />
               Vacunas
@@ -255,11 +274,45 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
               <Scale className='h-4 w-4' />
               Peso
             </TabsTrigger>
-            <TabsTrigger value='allergies' className='flex items-center gap-2 data-[state=active]:bg-green-100/50'>
-              <AlertCircle className='h-4 w-4' />
-              Alergias
-            </TabsTrigger>
           </TabsList>
+
+          <TabsContent value='allergies'>
+            <Card>
+              <CardHeader>
+                <CardTitle>Registro de Alergias</CardTitle>
+                <CardDescription>Control de alergias y reacciones adversas</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className='h-[400px] w-full rounded-md border'>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Alérgeno</TableHead>
+                        <TableHead>Severidad</TableHead>
+                        <TableHead>Síntomas</TableHead>
+                        <TableHead>Fecha diagnóstico</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>Pollo</TableCell>
+                        <TableCell>
+                          <Badge variant='outline' className='bg-yellow-100 text-yellow-700 hover:bg-yellow-100'>
+                            Moderada
+                          </Badge>
+                        </TableCell>
+                        <TableCell>Picazón y enrojecimiento</TableCell>
+                        <TableCell>2023-12-15</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+                <Button className='mt-4 w-full bg-green-600 hover:bg-green-700' onClick={() => openAddModal('allergy')}>
+                  <Plus className='mr-2 h-4 w-4' /> Añadir Alergia
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
   
           <TabsContent value='vaccines'>
             <Card>
@@ -454,43 +507,6 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                 </div>
                 <Button className='mt-4 w-full bg-green-600 hover:bg-green-700' onClick={() => openAddModal('weight')}>
                   <Plus className='mr-2 h-4 w-4' /> Añadir Peso
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value='allergies'>
-            <Card>
-              <CardHeader>
-                <CardTitle>Registro de Alergias</CardTitle>
-                <CardDescription>Control de alergias y reacciones adversas</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ScrollArea className='h-[400px] w-full rounded-md border'>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Alérgeno</TableHead>
-                        <TableHead>Severidad</TableHead>
-                        <TableHead>Síntomas</TableHead>
-                        <TableHead>Fecha diagnóstico</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell>Pollo</TableCell>
-                        <TableCell>
-                          <Badge variant='outline' className='bg-yellow-100 text-yellow-700 hover:bg-yellow-100'>
-                            Moderada
-                          </Badge>
-                        </TableCell>
-                        <TableCell>Picazón y enrojecimiento</TableCell>
-                        <TableCell>2023-12-15</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </ScrollArea>
-                <Button className='mt-4 w-full bg-green-600 hover:bg-green-700' onClick={() => openAddModal('allergy')}>
-                  <Plus className='mr-2 h-4 w-4' /> Añadir Alergia
                 </Button>
               </CardContent>
             </Card>
