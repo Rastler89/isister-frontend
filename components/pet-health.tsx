@@ -19,6 +19,7 @@ import { AddRecordModal } from './add-record-modal'
 import { ConfirmationDialog } from './confirmation-dialog'
 import { EditScheduleModal } from './edit-schedule-modal'
 import Pet from '../interfaces/Pet'
+import { petService } from '../services/petService'
 
 interface PetHealthProps {
     id: string
@@ -39,28 +40,8 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
             const fetchPet = async () => {
                 setLoading(true)
                 try {
-                    let url = ''
-                    if(id!==undefined) {
-                        url = `http://localhost/api/pets/${id}`
-                     
-    
-                        const response = await fetch(url, {
-                            cache: 'no-store',
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                Authorization: `Bearer ${localStorage.getItem('access_token')}`
-                            }
-                        })
-                    
-    
-                        if(!response.ok) {
-                            throw new Error('Error en la petición')
-                        }
-                        const data = await response.json()
-                        setPet(data)
-                    }
+                    const petDetails = await petService.getPetDetails(id)
+                    setPet(petDetails as Pet)
                 } catch(error:any) {
                     console.error(error.message)
                 } finally {
