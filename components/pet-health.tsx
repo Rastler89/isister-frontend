@@ -205,7 +205,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
               <div className='flex flex-col items-center gap-4'>
                 <div className='relative'>
                   <Avatar className='h-40 w-40'>
-                    <AvatarImage src='/placeholder.svg?height=160&width=160' alt='Foto de la mascota' />
+                    <AvatarImage src={`http://localhost/storage/${pet?.image}`} alt='Foto de la mascota' />
                     <AvatarFallback>
                       <Dog className='h-20 w-20' />
                     </AvatarFallback>
@@ -516,6 +516,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
         <ImageUploadModal
           isOpen={imageModalOpen}
           onClose={() => setImageModalOpen(false)}
+          petId={pet?.id}
           onUpload={(image) => {
             console.log('Nueva imagen:', image)
             // Aquí iría la lógica para actualizar la imagen

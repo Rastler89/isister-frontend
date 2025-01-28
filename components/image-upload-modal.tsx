@@ -11,14 +11,18 @@ interface ImageUploadModalProps {
   isOpen: boolean
   onClose: () => void
   onUpload: (image: string) => void
+  petId: string
 }
 
-export function ImageUploadModal({ isOpen, onClose, onUpload }: ImageUploadModalProps) {
+export function ImageUploadModal({ isOpen, onClose, onUpload, petId }: ImageUploadModalProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
+      setSelectedFile(file)
       const reader = new FileReader()
       reader.onloadend = () => {
         setImagePreview(reader.result as string)
@@ -27,11 +31,35 @@ export function ImageUploadModal({ isOpen, onClose, onUpload }: ImageUploadModal
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (imagePreview) {
-      onUpload(imagePreview)
+    if (!selectedFile) return
+
+    setIsLoading(true)
+    const formData = new FormData()
+    formData.append('image', selectedFile)
+    formData.append('petId', petId)
+
+    try {
+      const response = await fetch(`http://localhost/api/pets/${petId}`,{
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json',
+        }
+      })
+
+      if(!response.ok) {
+        throw new Error('Error al subir la imagen')
+      }
+
+      const data = await response.json()
+      onUpload('ok')
       onClose()
+    } catch(error) {
+      console.error(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
