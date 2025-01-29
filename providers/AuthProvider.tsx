@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "next/navigation"
 import { createContext, useContext, useEffect, useState } from "react"
 import { jwtDecode } from "jwt-decode"
+import { authService } from "../services/authServices"
 
 interface User {
     id: string
@@ -29,54 +30,89 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     
         if (storedUser) {
             setUser(JSON.parse(storedUser))
-
+            if(!isTokenValid(localStorage.getItem('access_token'))) {
+                refresh()
+            }
         } else if (!pathname.includes('/auth') && !publicRoutes.includes(pathname)) { 
             router.push('/auth/login')
         }
     }, [pathname, router])
 
+    const isTokenValid = (token:string | null):boolean => {
+        if(!token) return false
+
+        try {
+            const payloadBase64 = token.split('.')[1]
+            const payloadDecoded = JSON.parse(atob(payloadBase64))
+            const expiration = payloadDecoded.exp
+
+            if(!expiration) return false
+
+            const currentTime = Math.floor(Date.now() / 1000)
+            return expiration > currentTime //
+        } catch(error) {
+            console.error('error al decodificar el token: ',error)
+            return false
+        }
+    }
+
+    const refresh = async () => {
+        const refresh = localStorage.getItem('refresh_token')
+
+        if(!refresh) return
+        
+        try {
+            const data = await authService.refresh(refresh) as { 
+                token_type: string,
+                expires_in: number,
+                access_token: string, 
+                refresh_token: string 
+            } 
+
+            if(!data) return
+
+            createUser(data)
+        } catch(error) {
+            logout()
+        }
+
+    }
+
     const login = async (email:string, password: string) => {
         try {
-            const response = await fetch('http://localhost/oauth/token', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username: email,
-                    password: password,
-                    client_id: '2',
-                    client_secret: 'c1QmHMdGqmxyl7Gv2UlWdlqRgyTLT3UJ1uI0jtr6',
-                    grant_type: 'password'
-                })
-            })
-
-            if(!response.ok) {
-                throw new Error('Invalid login credentials')
+            const data = await authService.login(email, password) as { 
+                token_type: string,
+                expires_in: number,
+                access_token: string, 
+                refresh_token: string 
             }
 
-            const data = await response.json()
+            if(!data) return
 
-            localStorage.setItem('access_token',data.access_token)
-            localStorage.setItem('refresh_token',data.refresh_token)
-            
-            const decodedToken:any = jwtDecode(data.access_token)
-
-            console.log(decodedToken)
-
-            const user = {
-                id: decodedToken.sub,
-                email,
-                name: decodedToken.name
-            }
-
-            localStorage.setItem('user',JSON.stringify(user))
-            setUser(user)
-
-            router.push('/pets')
+            createUser(data)
         } catch(error) {
             console.error('Login failed: ', error)
         }
+    }
+
+    const createUser = (data: { access_token: string; refresh_token: string }) => {
+        localStorage.setItem('access_token',data.access_token )
+        localStorage.setItem('refresh_token',data.refresh_token)
+        
+        const decodedToken:any = jwtDecode(data.access_token)
+
+        console.log(decodedToken)
+
+        const user = {
+            id: decodedToken.sub,
+            email,
+            name: decodedToken.name
+        }
+
+        localStorage.setItem('user',JSON.stringify(user))
+        setUser(user)
+
+        router.push('/pets')
     }
 
     const register = async (email: string, password: string, name: string, password_confirmation: string) => {
