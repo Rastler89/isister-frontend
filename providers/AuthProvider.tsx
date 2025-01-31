@@ -95,7 +95,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         }
     }
 
-    const createUser = (data: { access_token: string; refresh_token: string }) => {
+    const createUser = (data: { access_token: string; refresh_token: string, user: {name: string, email: string} }) => {
         localStorage.setItem('access_token',data.access_token )
         localStorage.setItem('refresh_token',data.refresh_token)
         
@@ -105,13 +105,13 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
 
         const user = {
             id: decodedToken.sub,
-            email,
-            name: decodedToken.name
+            email: data.user.email,
+            name: data.user.name
         }
 
         localStorage.setItem('user',JSON.stringify(user))
         setUser(user)
-
+        console.log('hola');
         router.push('/pets')
     }
 

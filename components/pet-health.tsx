@@ -63,10 +63,17 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
         setShowSaveDialog(true)
     }
   
-    const handleConfirmSave = () => {
+    const handleConfirmSave = async () => {
+      try {
+        const response = await petService.putMoreDetails(id,{birth: tempPetData.birthDate, character: tempPetData.character})
+
         setPet(pet ? {...pet, birth: tempPetData.birthDate, character: tempPetData.character} : pet)
         setIsEditing(false)
         setShowSaveDialog(false)
+
+      } catch(error) {
+        console.error(error)
+      }
     }
   
     const handleCancel = () => {

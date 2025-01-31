@@ -1,3 +1,5 @@
+import { authService } from "../services/authServices"
+
 export class ApiClient {
     private baseURL: string
     private token: string | null
@@ -47,22 +49,13 @@ export class ApiClient {
   
       // Si el token expiró (401), intenta renovarlo y reintentar la solicitud
       if (response.status === 401 && this.token) {
-        const newToken = await this.refreshToken()
-        if (newToken) {
-          this.setToken(newToken)
-          // Reintentar con el nuevo token
-          options.headers = {
-            ...options.headers,
-            Authorization: `Bearer ${newToken}`,
-          }
-          return this.request(endpoint, options)
-        }
+        const token = localStorage.getItem('refresh_token')
+
+        if(!token) throw new Error('Error al renovar')
+
+        authService.refresh(token)
       }
-  
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Error en la solicitud')
-      }
+
   
       return response.json()
     }
@@ -94,23 +87,6 @@ export class ApiClient {
     async delete<T>(endpoint: string, customHeaders?: HeadersInit): Promise<T> {
       const options = this.getRequestOptions('DELETE', undefined, customHeaders)
       return this.request<T>(endpoint, options)
-    }
-  
-    // Método para renovar el token
-    private async refreshToken(): Promise<string | null> {
-      try {
-        const response = await fetch(`${this.baseURL}/refresh-token`, {
-          method: 'POST',
-          credentials: 'include', // Si usas cookies para manejar sesiones
-        })
-        if (response.ok) {
-          const data = await response.json()
-          return data.token
-        }
-      } catch (error) {
-        console.error('Error al renovar el token:', error)
-      }
-      return null
     }
   }
   

@@ -8,11 +8,13 @@ export const petService = {
     return apiClient.get(`/pets/${petId}`)
   },
 
-  async uploadPetImage(petId: string, file: File) {
-    const formData = new FormData()
-    formData.append('image', file)
-    formData.append('petId', petId)
+  async putMoreDetails(petId: string, details: any) {
+    apiClient.setToken(localStorage.getItem('access_token')||'')
+    return apiClient.put(`/pets/${petId}`, details)
+  },
 
-    return apiClient.post('/upload-image', formData)
+  async uploadPetImage(petId: string, formData: any) {
+    apiClient.setToken(localStorage.getItem('access_token')||'')
+    return apiClient.post(`/pets/${petId}`, formData, {'Accept': 'application/json' }as HeadersInit)
   },
 }
