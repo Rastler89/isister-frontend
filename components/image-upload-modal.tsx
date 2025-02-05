@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Button } from './ui/button'
+import { petService } from '../services/petService'
 
 interface ImageUploadModalProps {
   isOpen: boolean
@@ -41,15 +42,24 @@ export function ImageUploadModal({ isOpen, onClose, onUpload, petId }: ImageUplo
     formData.append('petId', petId)
 
     try {
-      const response = await fetch(`http://localhost/api/pets/${petId}`,{
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Accept': 'application/json',
-        }
-      })
+      
+      const base64Image = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = error => reject(error);
+          reader.readAsDataURL(selectedFile);
+      });
 
-      if(!response.ok) {
+      // Crear el objeto de datos a enviar
+      const requestData = {
+          petId: petId,
+          image: base64Image // Enviamos el string base64
+      };
+
+      // Enviar los datos (ajusta el servicio para enviar JSON)
+      const response = await petService.uploadPetImage(petId, requestData) as Response;
+
+      if (!response.ok) {
         throw new Error('Error al subir la imagen')
       }
 
