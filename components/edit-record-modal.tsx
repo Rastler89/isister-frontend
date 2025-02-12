@@ -26,10 +26,11 @@ interface EditRecordModalProps {
     created_at?: string
   }
   id: number
+  diseases: any
 }
 
 
-export function EditRecordModal({ isOpen, onClose, onSave, type, initialData = {}, id }: EditRecordModalProps) {
+export function EditRecordModal({ isOpen, onClose, onSave, type, initialData = {}, id, diseases }: EditRecordModalProps) {
   const [isLoading, setIsLoading] = useState(false)
 
 

@@ -9,6 +9,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog'
 import { Button } from './ui/button'
 import { petService } from '../services/petService'
 import { toast } from '../hooks/useToast'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command'
+import { cn } from '../libs/utils'
+import { Check, X } from 'lucide-react'
+import { Badge } from './ui/badge'
 
 interface AddRecordModalProps {
   isOpen: boolean
@@ -16,10 +20,13 @@ interface AddRecordModalProps {
   onAdd: (data: any) => void
   type: 'vaccine' | 'health' | 'walk' | 'meal' | 'weight' | 'allergy'
   id: number
+  diseases:any
 }
 
-export function AddRecordModal({ isOpen, onClose, onAdd, type, id }: AddRecordModalProps) {
+export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: AddRecordModalProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedDiseases, setSelectedDiseases] = useState<string[]>([])
+  const [commandOpen, setCommandOpen] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -33,7 +40,15 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id }: AddRecordMo
       case 'vaccine':
         data.date = formData.get('date')
         data.name = formData.get('name')
-        data.nextDue = formData.get('nextDue')
+        data.lot = formData.get('lot')
+        data.disease = selectedDiseases
+        data.next = formData.get('next')
+
+        try {
+          const response = await petService.createVaccine(id,data)
+        } catch(error) {
+          console.error(error)
+        }
         break
       case 'health':
         data.date = formData.get('date')
@@ -74,6 +89,12 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id }: AddRecordMo
     onClose()
   }
 
+  const toggleDisease = (diseaseValue: string) => {
+    setSelectedDiseases((current) =>
+      current.includes(diseaseValue) ? current.filter((d) => d !== diseaseValue) : [...current, diseaseValue],
+    )
+  }
+
   const renderFields = () => {
     switch (type) {
       case 'vaccine':
@@ -86,6 +107,83 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id }: AddRecordMo
             <div className='grid gap-2'>
               <Label htmlFor='name'>Nombre de la vacuna</Label>
               <Input id='name' name='name' required />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='lot'>Lote</Label>
+              <Input id='lot' name='lot' required />
+            </div>
+            <div className="grid gap-2">
+              <Label>Enfermedades que previene</Label>
+              <div className="relative">
+                <Button
+                  type="button"
+                  variant="outline"
+                  role="combobox"
+                  className={cn("w-full justify-between", selectedDiseases.length > 0 && "h-full")}
+                  onClick={() => setCommandOpen(!commandOpen)}
+                >
+                  <span className="flex gap-1 flex-wrap">
+                    {selectedDiseases.length > 0
+                      ? selectedDiseases.map((disease) => {
+                          const label = diseases.find((d) => d.id === disease)?.name.es
+                          return (
+                            <Badge key={disease} variant="secondary" className="mr-1 mb-1">
+                              {label}
+                              <button
+                                className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    toggleDisease(disease)
+                                  }
+                                }}
+                                onMouseDown={(e) => {
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                }}
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                  toggleDisease(disease)
+                                }}
+                              >
+                                <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                              </button>
+                            </Badge>
+                          )
+                        })
+                      : "Seleccionar enfermedades..."}
+                  </span>
+                </Button>
+                {commandOpen && (
+                  <div className="absolute top-full z-50 w-full mt-2 rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
+                    <Command className="w-full">
+                      <CommandInput placeholder="Buscar enfermedad..." />
+                      <CommandList>
+                        <CommandEmpty>No se encontraron resultados.</CommandEmpty>
+                        <CommandGroup className="max-h-60 overflow-auto">
+                          {diseases.map((disease) => (
+                            <CommandItem key={disease.id} onSelect={() => toggleDisease(disease.id)}>
+                              <div className="flex items-center gap-2">
+                                <div
+                                  className={cn(
+                                    "flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                                    selectedDiseases.includes(disease.id)
+                                      ? "bg-primary text-primary-foreground"
+                                      : "opacity-50 [&_svg]:invisible",
+                                  )}
+                                >
+                                  <Check className={cn("h-4 w-4")} />
+                                </div>
+                                <span>{disease.name.es}</span>
+                              </div>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </div>
+                )}
+              </div>
             </div>
             <div className='grid gap-2'>
               <Label htmlFor='nextDue'>Próxima dosis</Label>

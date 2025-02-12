@@ -28,6 +28,10 @@ export const petService = {
     return apiClient.put(`/allergies/${petId}/${allergyId}`,allergy)
   },
 
+  async createVaccine(petId: number, vaccine: any) {
+    this.setToken()
+    return apiClient.post(`/vaccines/${petId}`,vaccine);
+  },
 
   setToken() {
     apiClient.setToken(localStorage.getItem('access_token')||'')

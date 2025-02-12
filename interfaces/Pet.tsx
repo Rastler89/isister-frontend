@@ -30,4 +30,5 @@ export default interface Pet {
     surgeries: any
     medicaltests: any
     constants: any
+    diseases: any
 }

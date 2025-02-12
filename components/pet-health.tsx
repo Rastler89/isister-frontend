@@ -51,8 +51,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                 } finally {
                     setLoading(false)
                 }
-            }
-    
+            }   
             fetchPet()
         }, [])
   
@@ -91,10 +90,6 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
     }
   
     const [records, setRecords] = useState({
-      vaccines: [
-        { date: '2024-01-05', name: 'Rabia', nextDue: '2025-01-05' },
-        { date: '2023-12-15', name: 'Parvovirus', nextDue: '2024-06-15' },
-      ],
       health: [
         { date: '2024-01-10', issue: 'Revisión general', notes: 'Todo bien' },
         { date: '2023-12-20', issue: 'Dolor en pata', notes: 'Esguince leve' },
@@ -343,9 +338,14 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
   
           <TabsContent value='vaccines'>
             <Card>
-              <CardHeader>
-                <CardTitle>Registro de Vacunas</CardTitle>
-                <CardDescription>Mantén un registro de las vacunas y sus fechas de renovación</CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                <div>
+                  <CardTitle>Registro de Vacunas</CardTitle>
+                  <CardDescription>Mantén un registro de las vacunas y sus fechas de renovación</CardDescription>
+                </div>
+                <Button className='mt-4 bg-green-600 hover:bg-green-700' onClick={() => openAddModal('vaccine')}>
+                  <Plus className='mr-2 h-4 w-4' /> Añadir Vacuna
+                </Button>
               </CardHeader>
               <CardContent>
                 <ScrollArea className='h-[400px] w-full rounded-md border'>
@@ -354,16 +354,22 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                       <TableRow>
                         <TableHead>Fecha</TableHead>
                         <TableHead>Vacuna</TableHead>
+                        <TableHead>Lote</TableHead>
+                        <TableHead>Enfermedades</TableHead>
                         <TableHead>Próxima Dosis</TableHead>
+                        <TableHead>Veterinario</TableHead>
                         <TableHead>Estado</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {records.vaccines.map((vaccine, index) => (
+                      {pet?.vaccines.map((vaccine, index) => (
                         <TableRow key={index}>
-                          <TableCell>{vaccine.date}</TableCell>
+                          <TableCell>{vaccine.application}</TableCell>
                           <TableCell>{vaccine.name}</TableCell>
-                          <TableCell>{vaccine.nextDue}</TableCell>
+                          <TableCell>{vaccine.lot}</TableCell>
+                          <TableCell>Rabia, lkjfoi</TableCell>
+                          <TableCell>{vaccine.next}</TableCell>
+                          <TableCell>{vaccine.vcode}</TableCell>
                           <TableCell>
                             <Badge
                               variant={new Date(vaccine.nextDue) > new Date() ? 'default' : 'destructive'}
@@ -373,7 +379,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                                   : ''
                               }
                             >
-                              {new Date(vaccine.nextDue) > new Date() ? 'Vigente' : 'Vencida'}
+                              {new Date(vaccine.next) > new Date() ? 'Vigente' : 'Vencida'}
                             </Badge>
                           </TableCell>
                         </TableRow>
@@ -381,9 +387,6 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                     </TableBody>
                   </Table>
                 </ScrollArea>
-                <Button className='mt-4 w-full bg-green-600 hover:bg-green-700' onClick={() => openAddModal('vaccine')}>
-                  <Plus className='mr-2 h-4 w-4' /> Añadir Vacuna
-                </Button>
               </CardContent>
             </Card>
           </TabsContent>
@@ -556,6 +559,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
           onAdd={() => handleSaveModal(editModalData, false)}
           type={modalType}
           id={pet?.id || 0}
+          diseases={pet?.diseases}
         />
         <ConfirmationDialog
           isOpen={showSaveDialog}
@@ -578,6 +582,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
           type={modalType}
           initialData={editModalData}
           id={pet?.id || 0}
+          diseases={pet?.diseases}
         />
       </div>
     )
