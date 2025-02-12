@@ -7,15 +7,18 @@ import { Textarea } from './ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog'
 import { Button } from './ui/button'
+import { petService } from '../services/petService'
+import { toast } from '../hooks/useToast'
 
 interface AddRecordModalProps {
   isOpen: boolean
   onClose: () => void
   onAdd: (data: any) => void
   type: 'vaccine' | 'health' | 'walk' | 'meal' | 'weight' | 'allergy'
+  id: number
 }
 
-export function AddRecordModal({ isOpen, onClose, onAdd, type }: AddRecordModalProps) {
+export function AddRecordModal({ isOpen, onClose, onAdd, type, id }: AddRecordModalProps) {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -40,8 +43,14 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type }: AddRecordModalP
       case 'allergy':
         data.name = formData.get('name')
         data.severity = formData.get('severity')
-        data.symptoms = formData.get('symptoms')
-        data.diagnosis_date = formData.get('diagnosis_date')
+        data.description = formData.get('description')
+        data.created_at = formData.get('created_at')
+
+        try {
+          const response = await petService.createAllergy(id,data)
+        } catch(error) {
+          console.error(error)
+        }
         break
       case 'walk':
         data.day = formData.get('day')
@@ -60,7 +69,6 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type }: AddRecordModalP
         break
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1000))
     onAdd(data)
     setIsLoading(false)
     onClose()
@@ -118,19 +126,20 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type }: AddRecordModalP
                   <SelectValue placeholder='Selecciona la severidad' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='mild'>Leve</SelectItem>
-                  <SelectItem value='moderate'>Moderada</SelectItem>
-                  <SelectItem value='severe'>Grave</SelectItem>
+                  <SelectItem value='0'>Leve</SelectItem>
+                  <SelectItem value='1'>Moderada</SelectItem>
+                  <SelectItem value='2'>Grave</SelectItem>
+                  <SelectItem value='3'>Anaflaxia</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className='grid gap-2'>
               <Label htmlFor='symptoms'>Síntomas</Label>
-              <Textarea id='symptoms' name='symptoms' required />
+              <Textarea id='symptoms' name='description' required />
             </div>
             <div className='grid gap-2'>
-              <Label htmlFor='diagnosis_date'>Fecha de diagnóstico</Label>
-              <Input id='diagnosis_date' name='diagnosis_date' type='date' required />
+              <Label htmlFor='created_at'>Fecha de diagnóstico</Label>
+              <Input id='created_at' name='created_at' type='date' required />
             </div>
           </>
         )

@@ -20,6 +20,9 @@ import { ConfirmationDialog } from './confirmation-dialog'
 import { EditScheduleModal } from './edit-schedule-modal'
 import Pet from '../interfaces/Pet'
 import { petService } from '../services/petService'
+import Severity from './severity'
+import { EditRecordModal } from './edit-record-modal'
+import { toast } from '../hooks/useToast'
 
 interface PetHealthProps {
     id: string
@@ -32,7 +35,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
     const [showSaveDialog, setShowSaveDialog] = useState(false)
     const [imageModalOpen, setImageModalOpen] = useState(false)
     const [addModalOpen, setAddModalOpen] = useState(false)
-    const [addModalType, setAddModalType] = useState<'vaccine' | 'health' | 'walk' | 'meal' | 'weight' | 'allergy'>(
+    const [modalType, setModalType] = useState<'vaccine' | 'health' | 'walk' | 'meal' | 'weight' | 'allergy'>(
       'allergy',
     )
 
@@ -41,6 +44,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                 setLoading(true)
                 try {
                     const petDetails = await petService.getPetDetails(id)
+                    console.log(petDetails)
                     setPet(petDetails as Pet)
                 } catch(error:any) {
                     console.error(error.message)
@@ -81,13 +85,8 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
         setIsEditing(false)
     }
   
-    const handleAddRecord = (data: any) => {
-      // Aquí iría la lógica para añadir el registro según el tipo
-      console.log('Nuevo registro:', data)
-    }
-  
-    const openAddModal = (type: typeof addModalType) => {
-        setAddModalType(type)
+    const openAddModal = (type: typeof modalType) => {
+        setModalType(type)
         setAddModalOpen(true)
     }
   
@@ -135,7 +134,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
       amount: '',
     })
   
-    const handleEditSchedule = (type: 'walk' | 'meal', data: any) => {
+    const handleEditSchedule = (type: "walk" | "meal", data: any) => {
       setEditScheduleType(type)
       setEditScheduleData(data)
       setEditScheduleModalOpen(true)
@@ -144,6 +143,32 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
     const handleSaveSchedule = (data: any) => {
       // Aquí iría la lógica para actualizar el horario
       console.log('Actualizar horario:', data)
+    }
+
+    const [editModalOpen, setEditModalOpen] = useState(false)
+    const [editModalData, setEditModalData] = useState<any>(null)
+
+    const handleEditElement = (type: "vaccine" | "health" | "allergy", data: any) => {
+      setModalType(type)
+      setEditModalData(data)
+      setEditModalOpen(true)
+    }
+
+    const handleSaveModal = async (data: any,isEdit:boolean) => {
+      setLoading(true)
+      try {
+          const petDetails = await petService.getPetDetails(id)
+          console.log(petDetails)
+          setPet(petDetails as Pet)
+      } catch(error:any) {
+          console.error(error.message)
+      } finally {
+          setLoading(false)
+      }
+    }
+
+    if (loading) {
+      return null
     }
   
     return (
@@ -266,9 +291,14 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
 
           <TabsContent value='allergies'>
             <Card>
-              <CardHeader>
-                <CardTitle>Registro de Alergias</CardTitle>
-                <CardDescription>Control de alergias y reacciones adversas</CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                <div>
+                  <CardTitle>Registro de Alergias</CardTitle>
+                  <CardDescription>Control de alergias y reacciones adversas</CardDescription>
+                </div>
+                <Button className='mt-4 bg-green-600 hover:bg-green-700' onClick={() => openAddModal('allergy')}>
+                  <Plus className='mr-2 h-4 w-4' /> Añadir Alergia
+                </Button>
               </CardHeader>
               <CardContent>
                 <ScrollArea className='h-[400px] w-full rounded-md border'>
@@ -282,22 +312,31 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      <TableRow>
-                        <TableCell>Pollo</TableCell>
-                        <TableCell>
-                          <Badge variant='outline' className='bg-yellow-100 text-yellow-700 hover:bg-yellow-100'>
-                            Moderada
-                          </Badge>
+                      {pet?.allergies.map((allergy,index) => (
+                        <TableRow key={index}>
+                        <TableCell>{allergy.name}</TableCell>
+                        <TableCell>{/*TODO gravedades*/}
+                          <Severity level={allergy.severity} />
                         </TableCell>
-                        <TableCell>Picazón y enrojecimiento</TableCell>
-                        <TableCell>2023-12-15</TableCell>
+                        <TableCell>{allergy.description}</TableCell>
+                        <TableCell>
+                          {new Date(allergy.created_at).toLocaleString("es-ES", { year: "2-digit", month: "long", day: "numeric",})}
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => handleEditElement("allergy", allergy)}
+                            >
+                            <Edit2 className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
                       </TableRow>
+                      ))}
                     </TableBody>
                   </Table>
                 </ScrollArea>
-                <Button className='mt-4 w-full bg-green-600 hover:bg-green-700' onClick={() => openAddModal('allergy')}>
-                  <Plus className='mr-2 h-4 w-4' /> Añadir Alergia
-                </Button>
               </CardContent>
             </Card>
           </TabsContent>
@@ -504,7 +543,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
         <ImageUploadModal
           isOpen={imageModalOpen}
           onClose={() => setImageModalOpen(false)}
-          petId={pet?.id}
+          petId={String(pet?.id)}
           onUpload={(image) => {
             console.log('Nueva imagen:', image)
             // Aquí iría la lógica para actualizar la imagen
@@ -514,8 +553,9 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
         <AddRecordModal
           isOpen={addModalOpen}
           onClose={() => setAddModalOpen(false)}
-          onAdd={handleAddRecord}
-          type={addModalType}
+          onAdd={() => handleSaveModal(editModalData, false)}
+          type={modalType}
+          id={pet?.id || 0}
         />
         <ConfirmationDialog
           isOpen={showSaveDialog}
@@ -530,6 +570,14 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
           onSave={handleSaveSchedule}
           type={editScheduleType}
           initialData={editScheduleData}
+        />
+        <EditRecordModal
+          isOpen={editModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          onSave={() => handleSaveModal(editModalData, true)}
+          type={modalType}
+          initialData={editModalData}
+          id={pet?.id || 0}
         />
       </div>
     )

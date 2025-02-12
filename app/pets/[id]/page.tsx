@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import PetHealthTracker from "../../../components/pet-health"
+import LoadingPetProfile from "./loading";
 
 interface PetPageProps {
     params: { id: string };
@@ -9,7 +11,9 @@ const PetProfile = async ({ params }: PetPageProps) => {
 
     return (
         <main className='flex-1'>
-            <PetHealthTracker id={id}/>
+            <Suspense fallback={<LoadingPetProfile />}>
+                <PetHealthTracker id={id}/>
+            </Suspense>
         </main>
     )
 }
