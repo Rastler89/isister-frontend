@@ -38,11 +38,12 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: A
     // Convertir FormData a objeto según el tipo
     switch (type) {
       case 'vaccine':
-        data.date = formData.get('date')
+        data.application = formData.get('application')
         data.name = formData.get('name')
         data.lot = formData.get('lot')
-        data.disease = selectedDiseases
+        data.diseases = selectedDiseases
         data.next = formData.get('next')
+        data.vcode = formData.get('vcode')
 
         try {
           const response = await petService.createVaccine(id,data)
@@ -101,8 +102,8 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: A
         return (
           <>
             <div className='grid gap-2'>
-              <Label htmlFor='date'>Fecha de vacunación</Label>
-              <Input id='date' name='date' type='date' required />
+              <Label htmlFor='application'>Fecha de vacunación</Label>
+              <Input id='application' name='application' type='date' required />
             </div>
             <div className='grid gap-2'>
               <Label htmlFor='name'>Nombre de la vacuna</Label>
@@ -186,8 +187,12 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: A
               </div>
             </div>
             <div className='grid gap-2'>
-              <Label htmlFor='nextDue'>Próxima dosis</Label>
-              <Input id='nextDue' name='nextDue' type='date' required />
+              <Label htmlFor='next'>Próxima dosis</Label>
+              <Input id='next' name='next' type='date' required />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='vcode'>Veterinario</Label>
+              <Input id='vcode' name='vcode' required />
             </div>
           </>
         )

@@ -150,7 +150,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
     }
 
     const handleSaveModal = async (data: any,isEdit:boolean) => {
-      setLoading(true)
+      /*setLoading(true)
       try {
           const petDetails = await petService.getPetDetails(id)
           console.log(petDetails)
@@ -159,7 +159,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
           console.error(error.message)
       } finally {
           setLoading(false)
-      }
+      }*/
     }
 
     if (loading) {
@@ -372,9 +372,9 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                           <TableCell>{vaccine.vcode}</TableCell>
                           <TableCell>
                             <Badge
-                              variant={new Date(vaccine.nextDue) > new Date() ? 'default' : 'destructive'}
+                              variant={new Date(vaccine.next) > new Date() ? 'default' : 'destructive'}
                               className={
-                                new Date(vaccine.nextDue) > new Date()
+                                new Date(vaccine.next) > new Date()
                                   ? 'bg-green-100 text-green-700 hover:bg-green-200'
                                   : ''
                               }
