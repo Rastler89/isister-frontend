@@ -19,8 +19,8 @@ export default interface Pet {
     specie_id: number
     specie_en: string
     specie_es: string
-    scheduleWalks: Array<Array<string>>
-    scheduleDiets: Array<Array<string>>
+    scheduleWalks: Array<ScheduleWalk>
+    scheduleDiets: Array<ScheduleDiet>
     vaccines: any
     allergies: any
     walkroutines: any
@@ -31,4 +31,21 @@ export default interface Pet {
     medicaltests: any
     constants: any
     diseases: any
+}
+
+interface ScheduleWalk {
+    day: string
+    time: string
+    description: string
+    duration: string
+}
+
+interface ScheduleDiet {
+    day: string
+    time: string
+    description: string
+    quantity?: string
+    brand?: string
+    type?: string
+    information?: string
 }

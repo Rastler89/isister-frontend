@@ -6,6 +6,7 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
+import { Textarea } from './ui/textarea'
 
 
 interface EditScheduleModalProps {
@@ -28,9 +29,9 @@ export function EditScheduleModal({
   onSave,
   type,
   initialData = {
-    day: 'Lunes',
+    day: '1',
     time: '08:00',
-    duration: '30 min',
+    duration: '30',
     type: '',
     amount: '',
   },
@@ -45,7 +46,14 @@ export function EditScheduleModal({
     const data = {
       day: formData.get('day'),
       time: formData.get('time'),
-      ...(type === 'walk' ? { duration: formData.get('duration') } : {}),
+      description: formData.get('description'),
+      ...(type === 'walk' 
+        ? { 
+          duration: formData.get('duration'),
+          intensity: formData.get('intensity'),
+          route: formData.get('route')
+          } 
+        : {}),
       ...(type === 'meal'
         ? {
             type: formData.get('type'),
@@ -54,7 +62,8 @@ export function EditScheduleModal({
         : {}),
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    
+    //await new Promise((resolve) => setTimeout(resolve, 1000))
     onSave(data)
     setIsLoading(false)
     onClose()
@@ -76,13 +85,14 @@ export function EditScheduleModal({
                 </SelectTrigger>
                 <SelectContent>
                   {type === 'meal' && <SelectItem value='Todos'>Todos los días</SelectItem>}
-                  <SelectItem value='Lunes'>Lunes</SelectItem>
-                  <SelectItem value='Martes'>Martes</SelectItem>
-                  <SelectItem value='Miércoles'>Miércoles</SelectItem>
-                  <SelectItem value='Jueves'>Jueves</SelectItem>
-                  <SelectItem value='Viernes'>Viernes</SelectItem>
-                  <SelectItem value='Sábado'>Sábado</SelectItem>
-                  <SelectItem value='Domingo'>Domingo</SelectItem>
+                  <SelectItem value='1'>Lunes</SelectItem>
+                  <SelectItem value='2'>Martes</SelectItem>
+                  <SelectItem value='3'>Miércoles</SelectItem>
+                  <SelectItem value='4'>Jueves</SelectItem>
+                  <SelectItem value='5'>Viernes</SelectItem>
+                  <SelectItem value='6'>Sábado</SelectItem>
+                  <SelectItem value='7'>Domingo</SelectItem>
+                  <SelectItem value='8'>Todos</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -93,20 +103,46 @@ export function EditScheduleModal({
             </div>
 
             {type === 'walk' && (
-              <div className='grid gap-2'>
-                <Label htmlFor='duration'>Duración</Label>
-                <Select name='duration' defaultValue={initialData.duration} required>
-                  <SelectTrigger>
-                    <SelectValue placeholder='Selecciona la duración' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value='15 min'>15 minutos</SelectItem>
-                    <SelectItem value='30 min'>30 minutos</SelectItem>
-                    <SelectItem value='45 min'>45 minutos</SelectItem>
-                    <SelectItem value='60 min'>1 hora</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <>
+                <div className='grid gap-2'>
+                  <Label htmlFor='duration'>Duración</Label>
+                  <Select name='duration' required>
+                    <SelectTrigger>
+                      <SelectValue placeholder='Selecciona la duración' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='15'>15 minutos</SelectItem>
+                      <SelectItem value='30'>30 minutos</SelectItem>
+                      <SelectItem value='45'>45 minutos</SelectItem>
+                      <SelectItem value='60'>1 hora</SelectItem>
+                      <SelectItem value='90'>1 hora 30 minutos</SelectItem>
+                      <SelectItem value='120'>2 horas</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className='grid gap-2'>
+                  <Label htmlFor='description'>Descripción</Label>
+                  <Textarea id='description' name='description' />
+                </div>
+                <div className='grid gap-2'>
+                  <Label htmlFor='intensity'>Intensidad</Label>
+                  <Select name='intensity' required>
+                    <SelectTrigger>
+                      <SelectValue placeholder='Selecciona la duración' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='0'>Leve</SelectItem>
+                      <SelectItem value='1'>Moderada</SelectItem>
+                      <SelectItem value='2'>Intensa</SelectItem>
+                      <SelectItem value='3'>Extrema</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className='grid gap-2'>
+                  <Label htmlFor='route'>Ruta</Label>
+                  <Textarea id='route' name='route' />
+                </div>
+              </>
             )}
 
             {type === 'meal' && (

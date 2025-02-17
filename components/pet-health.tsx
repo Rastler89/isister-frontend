@@ -23,6 +23,7 @@ import { petService } from '../services/petService'
 import Severity from './severity'
 import { EditRecordModal } from './edit-record-modal'
 import { toast } from '../hooks/useToast'
+import { ScheduleDetailDialog } from './schedule-detail-dialog'
 
 interface PetHealthProps {
     id: string
@@ -94,18 +95,6 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
         { date: '2024-01-10', issue: 'Revisión general', notes: 'Todo bien' },
         { date: '2023-12-20', issue: 'Dolor en pata', notes: 'Esguince leve' },
       ],
-      walks: [
-        { day: 'Lunes', time: '08:00', duration: '30 min' },
-        { day: 'Lunes', time: '19:00', duration: '45 min' },
-        { day: 'Martes', time: '08:00', duration: '30 min' },
-        { day: 'Martes', time: '19:00', duration: '45 min' },
-        { day: 'Miércoles', time: '08:00', duration: '30 min' },
-        { day: 'Miércoles', time: '19:00', duration: '45 min' },
-      ],
-      meals: [
-        { day: 'Todos', time: '08:30', type: 'Pienso', amount: '200g' },
-        { day: 'Todos', time: '20:30', type: 'Pienso', amount: '200g' },
-      ],
       weights: [
         { date: '2024-01-01', weight: 12.5 },
         { date: '2023-12-15', weight: 12.3 },
@@ -128,11 +117,21 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
       type: '',
       amount: '',
     })
+    const [selectedSchedule, setSelectedSchedule] = useState<{
+      type: "walk" | "meal"
+      data: any
+    } | null>(null)
+  
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   
     const handleEditSchedule = (type: "walk" | "meal", data: any) => {
       setEditScheduleType(type)
       setEditScheduleData(data)
       setEditScheduleModalOpen(true)
+    }
+
+    const handleScheduleClick = (type: "walk" | "meal", data: any) => {
+      setSelectedSchedule({ type, data })
     }
   
     const handleSaveSchedule = (data: any) => {
@@ -164,6 +163,21 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
 
     if (loading) {
       return null
+    }
+
+    const renderScheduleCell = (type: 'walk' | 'meal', item: any) => {
+      return (
+        <Badge
+          variant='outline'
+          className='cursor-pointer hover:bg-green-100'
+          onClick={(e) => {
+            e.preventDefault()
+            handleScheduleClick(type, item)
+          }}
+        >
+          {type === 'walk' ? item.duration : item.amount}
+        </Badge>
+      )
     }
   
     return (
@@ -427,9 +441,14 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
   
           <TabsContent value='walks'>
             <Card>
-              <CardHeader>
-                <CardTitle>Horario de Paseos</CardTitle>
-                <CardDescription>Programa semanal de paseos</CardDescription>
+              <CardHeader className='flex flex-row items-center justify-between space-y-0'>
+                <div>
+                  <CardTitle>Horario de Paseos</CardTitle>
+                  <CardDescription>Programa semanal de paseos</CardDescription>
+                </div>
+                <Button className='mt-4 bg-green-600 hover:bg-green-700' onClick={() => openAddModal('walk')}>
+                  <Plus className='mr-2 h-4 w-4' /> Programar Paseo
+                </Button>
               </CardHeader>
               <CardContent>
                 <div className='rounded-md border'>
@@ -447,18 +466,10 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                         <TableRow key={time}>
                           <TableCell className='font-medium'>{time}</TableCell>
                           {days.map((day) => {
-                            const walk = records.walks.find((w) => w.day === day && w.time === time)
+                            const walk = pet?.scheduleWalks.find((w) => w.day === day && w.time === time)
                             return (
                               <TableCell key={`${day}-${time}`}>
-                                {walk && (
-                                  <Badge
-                                    variant='outline'
-                                    className='cursor-pointer hover:bg-green-100'
-                                    onClick={() => handleEditSchedule('walk', walk)}
-                                  >
-                                    {walk.duration}
-                                  </Badge>
-                                )}
+                                {walk && renderScheduleCell('walk',walk)}
                               </TableCell>
                             )
                           })}
@@ -467,9 +478,6 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                     </TableBody>
                   </Table>
                 </div>
-                <Button className='mt-4 w-full bg-green-600 hover:bg-green-700' onClick={() => openAddModal('walk')}>
-                  <Plus className='mr-2 h-4 w-4' /> Programar Paseo
-                </Button>
               </CardContent>
             </Card>
           </TabsContent>
@@ -496,20 +504,12 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                         <TableRow key={time}>
                           <TableCell className='font-medium'>{time}</TableCell>
                           {days.map((day) => {
-                            const meal = records.meals.find(
+                            const meal = pet?.scheduleDiets.find(
                               (m) => (m.day === day || m.day === 'Todos') && m.time.split(':')[0] === time.split(':')[0],
                             )
                             return (
                               <TableCell key={`${day}-${time}`}>
-                                {meal && (
-                                  <Badge
-                                    variant='outline'
-                                    className='cursor-pointer hover:bg-green-100'
-                                    onClick={() => handleEditSchedule('meal', meal)}
-                                  >
-                                    {meal.amount}
-                                  </Badge>
-                                )}
+                                {meal && renderScheduleCell('meal',meal)}
                               </TableCell>
                             )
                           })}
@@ -575,6 +575,19 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
           type={editScheduleType}
           initialData={editScheduleData}
         />
+        {selectedSchedule && (
+          <ScheduleDetailDialog
+            isOpen={!!selectedSchedule}
+            onClose={() => setSelectedSchedule(null)}
+            onEdit={() => {
+              handleEditSchedule(selectedSchedule.type, selectedSchedule.data)
+              setSelectedSchedule(null)
+            }}
+            onDelete={() => setShowDeleteDialog(true)}
+            type={selectedSchedule.type}
+            data={selectedSchedule.data}
+          />
+        )}
         <EditRecordModal
           isOpen={editModalOpen}
           onClose={() => setEditModalOpen(false)}

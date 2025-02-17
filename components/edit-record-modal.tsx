@@ -102,8 +102,6 @@ export function EditRecordModal({ isOpen, onClose, onSave, type, initialData = {
     )
   }
 
-  console.log(selectedDiseases)
-
   const renderFields = () => {
     switch (type) {
       case 'vaccine':

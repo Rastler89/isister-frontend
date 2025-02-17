@@ -72,9 +72,18 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: A
         data.day = formData.get('day')
         data.time = formData.get('time')
         data.duration = formData.get('duration')
+        data.description = formData.get('description')
+        data.intensity = formData.get('intensity')
+        data.route = formData.get('route')
+
+        try {
+          const response = await petService.createWalk(id,data)
+        } catch(error) {
+          console.error(error)
+        }
         break
       case 'meal':
-        data.day = formData.get('day')
+        data.dayOfWeek = formData.get('day')
         data.time = formData.get('time')
         data.type = formData.get('type')
         data.amount = formData.get('amount')
@@ -257,13 +266,14 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: A
                   <SelectValue placeholder='Selecciona el día' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='Lunes'>Lunes</SelectItem>
-                  <SelectItem value='Martes'>Martes</SelectItem>
-                  <SelectItem value='Miércoles'>Miércoles</SelectItem>
-                  <SelectItem value='Jueves'>Jueves</SelectItem>
-                  <SelectItem value='Viernes'>Viernes</SelectItem>
-                  <SelectItem value='Sábado'>Sábado</SelectItem>
-                  <SelectItem value='Domingo'>Domingo</SelectItem>
+                  <SelectItem value='1'>Lunes</SelectItem>
+                  <SelectItem value='2'>Martes</SelectItem>
+                  <SelectItem value='3'>Miércoles</SelectItem>
+                  <SelectItem value='4'>Jueves</SelectItem>
+                  <SelectItem value='5'>Viernes</SelectItem>
+                  <SelectItem value='6'>Sábado</SelectItem>
+                  <SelectItem value='7'>Domingo</SelectItem>
+                  <SelectItem value='8'>Todos</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -278,12 +288,36 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: A
                   <SelectValue placeholder='Selecciona la duración' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='15 min'>15 minutos</SelectItem>
-                  <SelectItem value='30 min'>30 minutos</SelectItem>
-                  <SelectItem value='45 min'>45 minutos</SelectItem>
-                  <SelectItem value='60 min'>1 hora</SelectItem>
+                  <SelectItem value='15'>15 minutos</SelectItem>
+                  <SelectItem value='30'>30 minutos</SelectItem>
+                  <SelectItem value='45'>45 minutos</SelectItem>
+                  <SelectItem value='60'>1 hora</SelectItem>
+                  <SelectItem value='90'>1 hora 30 minutos</SelectItem>
+                  <SelectItem value='120'>2 horas</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='description'>Descripción</Label>
+              <Textarea id='description' name='description' />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='intensity'>Intensidad</Label>
+              <Select name='intensity' required>
+                <SelectTrigger>
+                  <SelectValue placeholder='Selecciona la duración' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='0'>Leve</SelectItem>
+                  <SelectItem value='1'>Moderada</SelectItem>
+                  <SelectItem value='2'>Intensa</SelectItem>
+                  <SelectItem value='3'>Extrema</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='route'>Ruta</Label>
+              <Textarea id='route' name='route' />
             </div>
           </>
         )

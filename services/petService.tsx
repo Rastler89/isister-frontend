@@ -33,6 +33,11 @@ export const petService = {
     return apiClient.post(`/vaccines/${petId}`,vaccine);
   },
 
+  async createWalk(petId: number, walk: any) {
+    this.setToken()
+    return apiClient.post(`/walks/${petId}`,walk);
+  },
+
   setToken() {
     apiClient.setToken(localStorage.getItem('access_token')||'')
   }
