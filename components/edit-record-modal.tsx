@@ -32,6 +32,7 @@ interface EditRecordModalProps {
     created_at?: string
     vcode?: string
     disease?: any
+    DayOfWeek?: string
   }
   id: number
   diseases: any

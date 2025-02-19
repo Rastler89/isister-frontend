@@ -69,7 +69,7 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: A
         }
         break
       case 'walk':
-        data.day = formData.get('day')
+        data.DayOfWeek = formData.get('day')
         data.time = formData.get('time')
         data.duration = formData.get('duration')
         data.description = formData.get('description')
@@ -83,7 +83,7 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: A
         }
         break
       case 'meal':
-        data.dayOfWeek = formData.get('day')
+        data.DayOfWeek = formData.get('day')
         data.time = formData.get('time')
         data.type = formData.get('type')
         data.amount = formData.get('amount')
@@ -266,13 +266,13 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: A
                   <SelectValue placeholder='Selecciona el día' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='1'>Lunes</SelectItem>
-                  <SelectItem value='2'>Martes</SelectItem>
-                  <SelectItem value='3'>Miércoles</SelectItem>
-                  <SelectItem value='4'>Jueves</SelectItem>
-                  <SelectItem value='5'>Viernes</SelectItem>
-                  <SelectItem value='6'>Sábado</SelectItem>
-                  <SelectItem value='7'>Domingo</SelectItem>
+                  <SelectItem value='0'>Lunes</SelectItem>
+                  <SelectItem value='1'>Martes</SelectItem>
+                  <SelectItem value='2'>Miércoles</SelectItem>
+                  <SelectItem value='3'>Jueves</SelectItem>
+                  <SelectItem value='4'>Viernes</SelectItem>
+                  <SelectItem value='5'>Sábado</SelectItem>
+                  <SelectItem value='6'>Domingo</SelectItem>
                   <SelectItem value='8'>Todos</SelectItem>
                 </SelectContent>
               </Select>

@@ -38,6 +38,11 @@ export const petService = {
     return apiClient.post(`/walks/${petId}`,walk);
   },
 
+  async deleteWalk(petId: number, day: string, time: string) {
+    this.setToken()
+    return apiClient.delete(`/walks/${petId}/${day}/${time}`);
+  },
+
   setToken() {
     apiClient.setToken(localStorage.getItem('access_token')||'')
   }

@@ -111,7 +111,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
     const [editScheduleModalOpen, setEditScheduleModalOpen] = useState(false)
     const [editScheduleType, setEditScheduleType] = useState<'walk' | 'meal'>('walk')
     const [editScheduleData, setEditScheduleData] = useState({
-      day: 'Lunes',
+      DayOfWeek: 'Lunes',
       time: '08:00',
       duration: '30 min',
       type: '',
@@ -121,8 +121,21 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
       type: "walk" | "meal"
       data: any
     } | null>(null)
-  
-    const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+
+    const handleDeleteSchedule = async (id:any,day:any,time:any) => {
+        try {
+          if(editScheduleType === "walk") {
+            const response = await petService.deleteWalk(id,day,time)
+          } else {
+            //TODO
+          }
+          
+        } catch(error) {
+          console.error(error)
+        } finally {
+          handleSaveModal
+        }
+      }
   
     const handleEditSchedule = (type: "walk" | "meal", data: any) => {
       setEditScheduleType(type)
@@ -135,8 +148,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
     }
   
     const handleSaveSchedule = (data: any) => {
-      // Aquí iría la lógica para actualizar el horario
-      console.log('Actualizar horario:', data)
+      handleSaveModal
     }
 
     const [editModalOpen, setEditModalOpen] = useState(false)
@@ -149,7 +161,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
     }
 
     const handleSaveModal = async (data: any,isEdit:boolean) => {
-      /*setLoading(true)
+      setLoading(true)
       try {
           const petDetails = await petService.getPetDetails(id)
           console.log(petDetails)
@@ -158,7 +170,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
           console.error(error.message)
       } finally {
           setLoading(false)
-      }*/
+      }
     }
 
     if (loading) {
@@ -583,9 +595,10 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
               handleEditSchedule(selectedSchedule.type, selectedSchedule.data)
               setSelectedSchedule(null)
             }}
-            onDelete={() => setShowDeleteDialog(true)}
+            onDelete={(id:any,day:any,time:any) => handleDeleteSchedule(id,day,time)}
             type={selectedSchedule.type}
             data={selectedSchedule.data}
+            id={pet?.id || 0}
           />
         )}
         <EditRecordModal

@@ -7,9 +7,10 @@ interface ConfirmationDialogProps {
   onConfirm: () => void
   title: string
   description: string
+  isDeleting?: boolean
 }
 
-export function ConfirmationDialog({ isOpen, onClose, onConfirm, title, description }: ConfirmationDialogProps) {
+export function ConfirmationDialog({ isOpen, onClose, onConfirm, title, description, isDeleting=false }: ConfirmationDialogProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
@@ -19,9 +20,16 @@ export function ConfirmationDialog({ isOpen, onClose, onConfirm, title, descript
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose}>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm} className='bg-green-600 hover:bg-green-700'>
-            Confirmar
-          </AlertDialogAction>
+          {isDeleting && (
+            <AlertDialogAction onClick={onConfirm} className='bg-red-600 hover:bg-red-700'>
+              Eliminar
+            </AlertDialogAction>
+          )}
+          {!isDeleting && (
+            <AlertDialogAction onClick={onConfirm} className='bg-green-600 hover:bg-green-700'>
+              Confirmar
+            </AlertDialogAction>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

@@ -2,13 +2,17 @@ import { Edit2, Trash2 } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
+import { ConfirmationDialog } from './confirmation-dialog'
+import { useState } from 'react'
+import { petService } from '../services/petService'
+import { on } from 'events'
 
 
 interface ScheduleDetailDialogProps {
   isOpen: boolean
   onClose: () => void
   onEdit: () => void
-  onDelete: () => void
+  onDelete: (id:any,day:any,time:any) => void
   type: 'walk' | 'meal'
   data: {
     day: string
@@ -18,15 +22,52 @@ interface ScheduleDetailDialogProps {
     amount?: string
     description?: string
     route?: string
-    intensity?: string
+    intensity?: number
     brand?: string
     nutritionalInfo?: string
     instructions?: string
   }
+  id: number
 }
 
-export function ScheduleDetailDialog({ isOpen, onClose, onEdit, onDelete, type, data }: ScheduleDetailDialogProps) {
+const daysWeek = {
+  'Lunes': '0',
+  'Martes': '1',
+  'Miércoles': '2',
+  'Jueves': '3',
+  'Viernes': '4',
+  'Sábado': '5',
+  'Domingo': '6',
+  'Todos': '8'
+}
+
+export function ScheduleDetailDialog({ isOpen, onClose, onEdit, type, data, id, onDelete }: ScheduleDetailDialogProps) {
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+
+
+  const getIntensityLabel = (intensity: number | undefined) => {
+    switch (intensity) {
+      case 0:
+        return 'Leve'
+      case 1:
+        return 'Moderada'
+      case 2:
+        return 'Intensa'
+      case 3:
+        return 'Extrema'
+      default:
+        return 'No especificada'
+    }
+  }
+
+  const handleDelete = async () => {
+    setShowConfirmDialog(true)
+    onDelete(id, daysWeek[data.day as keyof typeof daysWeek], data.time.split(":")[0])
+    onClose()
+  }
+
   return (
+    <>
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
@@ -39,13 +80,14 @@ export function ScheduleDetailDialog({ isOpen, onClose, onEdit, onDelete, type, 
                 {data.day} - {data.time}
               </Badge>
               <div className='flex gap-2'>
+                {/*}
                 <Button variant='outline' size='icon' onClick={onEdit} className='h-8 w-8'>
                   <Edit2 className='h-4 w-4' />
-                </Button>
+                </Button>*/}
                 <Button
                   variant='outline'
                   size='icon'
-                  onClick={onDelete}
+                  onClick={() => setShowConfirmDialog(true)}
                   className='h-8 w-8 text-red-600 hover:text-red-600 hover:bg-red-100'
                 >
                   <Trash2 className='h-4 w-4' />
@@ -67,7 +109,7 @@ export function ScheduleDetailDialog({ isOpen, onClose, onEdit, onDelete, type, 
                 </div>
                 <div>
                   <span className='text-muted-foreground'>Intensidad:</span>
-                  <p className='font-medium'>{data.intensity || 'No especificada'}</p>
+                  <p className='font-medium'>{getIntensityLabel(data.intensity)}</p>
                 </div>
                 <div className='col-span-2'>
                   <span className='text-muted-foreground'>Ruta:</span>
@@ -110,6 +152,16 @@ export function ScheduleDetailDialog({ isOpen, onClose, onEdit, onDelete, type, 
         </div>
       </DialogContent>
     </Dialog>
+
+    <ConfirmationDialog
+      isOpen={showConfirmDialog}
+      onClose={() => setShowConfirmDialog(false)}
+      onConfirm={handleDelete}
+      title='Eliminar'
+      description='¿Estás seguro de que quieres eliminar los datos seleccionados?'
+      isDeleting={true}
+    />
+    </>
   )
 }
 

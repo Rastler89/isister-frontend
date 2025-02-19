@@ -20,7 +20,21 @@ interface EditScheduleModalProps {
     duration?: string
     type?: string
     amount?: string
+    description?: string
+    route?: string
+    intensity?: number
   }
+}
+
+const daysWeek = {
+  'Lunes': '0',
+  'Martes': '1',
+  'Miércoles': '2',
+  'Jueves': '3',
+  'Viernes': '4',
+  'Sábado': '5',
+  'Domingo': '6',
+  'Todos': '8'
 }
 
 export function EditScheduleModal({
@@ -38,13 +52,16 @@ export function EditScheduleModal({
 }: EditScheduleModalProps) {
   const [isLoading, setIsLoading] = useState(false)
 
+  console.log(initialData)
+  const dayOfWeek = daysWeek[initialData.day as keyof typeof daysWeek]
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
 
     const formData = new FormData(e.currentTarget)
     const data = {
-      day: formData.get('day'),
+      DayOfWeek: formData.get('day'),
       time: formData.get('time'),
       description: formData.get('description'),
       ...(type === 'walk' 
@@ -79,19 +96,19 @@ export function EditScheduleModal({
           <div className='grid gap-4'>
             <div className='grid gap-2'>
               <Label htmlFor='day'>Día</Label>
-              <Select name='day' defaultValue={initialData.day} required>
+              <Select name='day' defaultValue={dayOfWeek} required>
                 <SelectTrigger>
                   <SelectValue placeholder='Selecciona el día' />
                 </SelectTrigger>
                 <SelectContent>
                   {type === 'meal' && <SelectItem value='Todos'>Todos los días</SelectItem>}
-                  <SelectItem value='1'>Lunes</SelectItem>
-                  <SelectItem value='2'>Martes</SelectItem>
-                  <SelectItem value='3'>Miércoles</SelectItem>
-                  <SelectItem value='4'>Jueves</SelectItem>
-                  <SelectItem value='5'>Viernes</SelectItem>
-                  <SelectItem value='6'>Sábado</SelectItem>
-                  <SelectItem value='7'>Domingo</SelectItem>
+                  <SelectItem value='0'>Lunes</SelectItem>
+                  <SelectItem value='1'>Martes</SelectItem>
+                  <SelectItem value='2'>Miércoles</SelectItem>
+                  <SelectItem value='3'>Jueves</SelectItem>
+                  <SelectItem value='4'>Viernes</SelectItem>
+                  <SelectItem value='5'>Sábado</SelectItem>
+                  <SelectItem value='6'>Domingo</SelectItem>
                   <SelectItem value='8'>Todos</SelectItem>
                 </SelectContent>
               </Select>
@@ -106,7 +123,7 @@ export function EditScheduleModal({
               <>
                 <div className='grid gap-2'>
                   <Label htmlFor='duration'>Duración</Label>
-                  <Select name='duration' required>
+                  <Select name='duration' required defaultValue={initialData.duration?.replace(' min','')}>
                     <SelectTrigger>
                       <SelectValue placeholder='Selecciona la duración' />
                     </SelectTrigger>
@@ -122,11 +139,11 @@ export function EditScheduleModal({
                 </div>
                 <div className='grid gap-2'>
                   <Label htmlFor='description'>Descripción</Label>
-                  <Textarea id='description' name='description' />
+                  <Textarea id='description' name='description' defaultValue={initialData.description}/>
                 </div>
                 <div className='grid gap-2'>
                   <Label htmlFor='intensity'>Intensidad</Label>
-                  <Select name='intensity' required>
+                  <Select name='intensity' required defaultValue={initialData.intensity?.toString()}>
                     <SelectTrigger>
                       <SelectValue placeholder='Selecciona la duración' />
                     </SelectTrigger>
@@ -140,7 +157,7 @@ export function EditScheduleModal({
                 </div>
                 <div className='grid gap-2'>
                   <Label htmlFor='route'>Ruta</Label>
-                  <Textarea id='route' name='route' />
+                  <Textarea id='route' name='route' defaultValue={initialData.route}/>
                 </div>
               </>
             )}
