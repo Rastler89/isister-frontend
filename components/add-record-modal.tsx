@@ -87,6 +87,14 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: A
         data.time = formData.get('time')
         data.type = formData.get('type')
         data.amount = formData.get('amount')
+        data.brand = formData.get('brand')
+        data.information = formData.get('information')
+
+        try {
+          const response = await petService.createMeal(id,data)
+        } catch(error) {
+          console.error(error)
+        }
         break
       case 'weight':
         data.date = formData.get('date')
@@ -332,14 +340,14 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: A
                   <SelectValue placeholder='Selecciona el día' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='Todos'>Todos los días</SelectItem>
-                  <SelectItem value='Lunes'>Lunes</SelectItem>
-                  <SelectItem value='Martes'>Martes</SelectItem>
-                  <SelectItem value='Miércoles'>Miércoles</SelectItem>
-                  <SelectItem value='Jueves'>Jueves</SelectItem>
-                  <SelectItem value='Viernes'>Viernes</SelectItem>
-                  <SelectItem value='Sábado'>Sábado</SelectItem>
-                  <SelectItem value='Domingo'>Domingo</SelectItem>
+                  <SelectItem value='0'>Lunes</SelectItem>
+                  <SelectItem value='1'>Martes</SelectItem>
+                  <SelectItem value='2'>Miércoles</SelectItem>
+                  <SelectItem value='3'>Jueves</SelectItem>
+                  <SelectItem value='4'>Viernes</SelectItem>
+                  <SelectItem value='5'>Sábado</SelectItem>
+                  <SelectItem value='6'>Domingo</SelectItem>
+                  <SelectItem value='8'>Todos</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -349,11 +357,31 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: A
             </div>
             <div className='grid gap-2'>
               <Label htmlFor='type'>Tipo</Label>
-              <Input id='type' name='type' required />
+              <Select name='type' required>
+                <SelectTrigger>
+                  <SelectValue placeholder='Selecciona el tipo de alimento' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='0'>Seco (Pienso, forraje, semillas, ...)</SelectItem>
+                  <SelectItem value='1'>Húmedo (Latas, purés, papillas, ...)</SelectItem>
+                  <SelectItem value='2'>Vivo (Insectos, peces, ...)</SelectItem>
+                  <SelectItem value='3'>Fresco (Carne cruda, fruta, ...)</SelectItem>
+                  <SelectItem value='4'>Preparados (BARF, sopa casera, ...)</SelectItem>
+                  <SelectItem value='5'>Suplementos (Vitaminas, minerales, ...)</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className='grid gap-2'>
               <Label htmlFor='amount'>Cantidad</Label>
               <Input id='amount' name='amount' required />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='brand'>Marca</Label>
+              <Input id='brand' name='brand' />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='information'>Información nutritiva</Label>
+              <Textarea id='information' name='information' />
             </div>
           </>
         )

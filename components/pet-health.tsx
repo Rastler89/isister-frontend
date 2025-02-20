@@ -124,17 +124,17 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
 
     const handleDeleteSchedule = async (id:any,day:any,time:any) => {
         try {
-          if(editScheduleType === "walk") {
+          if(selectedSchedule && selectedSchedule.type === "walk") {
             const response = await petService.deleteWalk(id,day,time)
           } else {
-            //TODO
+            const response = await petService.deleteMeal(id,day,time)
           }
           
         } catch(error) {
           console.error(error)
-        } finally {
-          handleSaveModal
         }
+
+        handleSaveModal
       }
   
     const handleEditSchedule = (type: "walk" | "meal", data: any) => {
@@ -496,9 +496,14 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
   
           <TabsContent value='meals'>
             <Card>
-              <CardHeader>
-                <CardTitle>Horario de Comidas</CardTitle>
-                <CardDescription>Programa diario de alimentación</CardDescription>
+              <CardHeader className='flex flex-row items-center justify-between space-y-0'>
+                <div>
+                  <CardTitle>Horario de Comidas</CardTitle>
+                  <CardDescription>Programa diario de alimentación</CardDescription>
+                </div>
+                <Button className='mt-4 bg-green-600 hover:bg-green-700' onClick={() => openAddModal('meal')}>
+                  <Plus className='mr-2 h-4 w-4' /> Programar Comida
+                </Button>
               </CardHeader>
               <CardContent>
                 <div className='rounded-md border'>
@@ -530,9 +535,6 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                     </TableBody>
                   </Table>
                 </div>
-                <Button className='mt-4 w-full bg-green-600 hover:bg-green-700' onClick={() => openAddModal('meal')}>
-                  <Plus className='mr-2 h-4 w-4' /> Programar Comida
-                </Button>
               </CardContent>
             </Card>
           </TabsContent>
