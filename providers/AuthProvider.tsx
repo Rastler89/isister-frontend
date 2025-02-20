@@ -117,7 +117,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
 
     const register = async (email: string, password: string, name: string, password_confirmation: string) => {
         try {
-            const response = await fetch('http://localhost/api/register', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

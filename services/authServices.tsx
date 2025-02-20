@@ -1,12 +1,13 @@
 import { ApiClient } from '../utils/apiClient'
 
 // Instancia del cliente API
-const apiClient = new ApiClient('http://localhost/oauth')
+const apiClient = new ApiClient(process.env.NEXT_PUBLIC_AUTH_URL || 'default_api_url')
 
-const client_secret = 'c1QmHMdGqmxyl7Gv2UlWdlqRgyTLT3UJ1uI0jtr6'
+const client_secret = process.env.NEXT_PUBLIC_SECRET_API_KEY
 
 export const authService = {
   async login(email: string, password: string) {
+    console.log(process.env.NEXT_PUBLIC_AUTH_URL)
     const data = await apiClient.post('/token',
       {
         username: email,

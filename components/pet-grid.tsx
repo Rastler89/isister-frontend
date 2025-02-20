@@ -40,7 +40,7 @@ const PetGrid = () => {
         const fetchPets = async () => {
             setLoading(true)
             try {
-                const response = await fetch('http://localhost/api/pets',{
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pets`,{
                         method: "GET", // Es opcional porque GET es el método por defecto
                         headers: {
                             "Content-Type": "application/json", // 
@@ -219,7 +219,7 @@ const PetGrid = () => {
                                 </DropdownMenu>
                                 <div className='flex items-center space-x-4'>
                                     <Avatar className='h-12 w-12'>
-                                        <AvatarImage src={`http://localhost/storage/${pet.image}`} alt={pet.name} />
+                                        <AvatarImage src={`${process.env.NEXT_PUBLIC_BASE_URL}/storage/${pet.image}`} alt={pet.name} />
                                         <AvatarFallback>
                                             <PetIcon className='h-6 w-6' />
                                         </AvatarFallback>

@@ -1,11 +1,16 @@
 import { ApiClient } from '../utils/apiClient'
 
-const apiClient = new ApiClient('http://localhost/api')
+const apiClient = new ApiClient(process.env.NEXT_PUBLIC_API_URL || 'default_api_url')
 
 export const petService = {
   async getPetDetails(petId: string) {
     this.setToken()
     return apiClient.get(`/pets/${petId}`)
+  },
+
+  async getSpecies() {
+    this.setToken()
+    return apiClient.get('/species')
   },
 
   async putMoreDetails(petId: string, details: any) {

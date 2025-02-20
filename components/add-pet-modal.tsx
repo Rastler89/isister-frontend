@@ -19,64 +19,6 @@ interface AddPetModalProps {
     onAdd: (pet: any) => void
 }
 
-const species = [
-    { value: 'dog', label: 'Perro' },
-    { value: 'cat', label: 'Gato' },
-    { value: 'rabbit', label: 'Conejo' },
-    { value: 'bird', label: 'Pájaro' },
-    { value: 'hamster', label: 'Hámster' },
-    { value: 'fish', label: 'Pez' },
-  ]
-
-  const breeds = {
-    dog: [
-      { value: 'border_collie', label: 'Border Collie' },
-      { value: 'golden_retriever', label: 'Golden Retriever' },
-      { value: 'german_shepherd', label: 'Pastor Alemán' },
-      { value: 'labrador', label: 'Labrador' },
-      { value: 'bulldog', label: 'Bulldog' },
-      { value: 'poodle', label: 'Caniche' },
-      { value: 'rottweiler', label: 'Rottweiler' },
-      { value: 'yorkshire', label: 'Yorkshire Terrier' },
-      { value: 'beagle', label: 'Beagle' },
-      { value: 'husky', label: 'Husky Siberiano' },
-    ],
-    cat: [
-      { value: 'siamese', label: 'Siamés' },
-      { value: 'persian', label: 'Persa' },
-      { value: 'maine_coon', label: 'Maine Coon' },
-      { value: 'bengal', label: 'Bengalí' },
-      { value: 'sphynx', label: 'Esfinge' },
-      { value: 'british_shorthair', label: 'British Shorthair' },
-      { value: 'ragdoll', label: 'Ragdoll' },
-      { value: 'russian_blue', label: 'Azul Ruso' },
-    ],
-    rabbit: [
-      { value: 'holland_lop', label: 'Holland Lop' },
-      { value: 'mini_rex', label: 'Mini Rex' },
-      { value: 'netherland_dwarf', label: 'Netherland Dwarf' },
-      { value: 'lionhead', label: 'Cabeza de León' },
-    ],
-    bird: [
-      { value: 'budgie', label: 'Periquito' },
-      { value: 'cockatiel', label: 'Cacatúa Ninfa' },
-      { value: 'lovebird', label: 'Agapornis' },
-      { value: 'canary', label: 'Canario' },
-    ],
-    hamster: [
-      { value: 'syrian', label: 'Sirio' },
-      { value: 'roborovski', label: 'Roborovski' },
-      { value: 'chinese', label: 'Chino' },
-      { value: 'winter_white', label: 'Ruso Campbell' },
-    ],
-    fish: [
-      { value: 'goldfish', label: 'Pez Dorado' },
-      { value: 'betta', label: 'Betta' },
-      { value: 'guppy', label: 'Guppy' },
-      { value: 'tetra', label: 'Tetra' },
-    ],
-  }
-
 const AddPetModal = ({onAdd}: AddPetModalProps) => {
     const [isLoading, setIsLoading] = useState(false)
     const [imagePreview,setImagePreview] = useState<string | null>(null)
@@ -89,13 +31,13 @@ const AddPetModal = ({onAdd}: AddPetModalProps) => {
     const [sex, setSex] = useState<string>('')
 
     const transformData = (apiData) => {
-        const species = apiData.map((specie) => ({
+        const species = apiData.map((specie:any) => ({
           value: specie.id, 
           label: specie.name.es, 
         }));
       
-        const breeds = apiData.reduce((acc, specie) => {
-          acc[specie.id] = specie.breeds.map((breed) => ({
+        const breeds = apiData.reduce((acc:any, specie:any) => {
+          acc[specie.id] = specie.breeds.map((breed:any) => ({
             value: breed.id, 
             label: breed.name.es, 
           }));
@@ -185,6 +127,7 @@ const AddPetModal = ({onAdd}: AddPetModalProps) => {
     }
 
     const handleSpeciesSelect = (value: string) => {
+        console.log(value);
         setSelectedSpecies(species.find((specie) => specie.label === value)?.value || 0)
         setSelectedBreed(0)
         setOpenSpecies(false)

@@ -239,7 +239,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
               <div className='flex flex-col items-center gap-4'>
                 <div className='relative'>
                   <Avatar className='h-40 w-40'>
-                    <AvatarImage src={`http://localhost/storage/${pet?.image}`} alt='Foto de la mascota' />
+                    <AvatarImage src={`${process.env.NEXT_PUBLIC_BASE_URL}/storage/${pet?.image}`} alt='Foto de la mascota' />
                     <AvatarFallback>
                       <Dog className='h-20 w-20' />
                     </AvatarFallback>
@@ -601,15 +601,17 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
             id={pet?.id || 0}
           />
         )}
-        <EditRecordModal
-          isOpen={editModalOpen}
-          onClose={() => setEditModalOpen(false)}
-          onSave={() => handleSaveModal(editModalData, true)}
-          type={modalType}
-          initialData={editModalData}
-          id={pet?.id || 0}
-          diseases={pet?.diseases}
-        />
+        {editModalOpen && (
+          <EditRecordModal
+            isOpen={editModalOpen}
+            onClose={() => setEditModalOpen(false)}
+            onSave={() => handleSaveModal(editModalData, true)}
+            type={modalType}
+            initialData={editModalData}
+            id={pet?.id || 0}
+            diseases={pet?.diseases}
+            />
+        )}
       </div>
     )
 }
