@@ -99,6 +99,8 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
             name: data.user.name
         }
 
+        console.log(user)
+
         localStorage.setItem('user',JSON.stringify(user))
         setUser(user)
         router.push('/pets')
