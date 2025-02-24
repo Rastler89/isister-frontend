@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation"
 import { createContext, useContext, useEffect, useState } from "react"
 import { jwtDecode } from "jwt-decode"
-import { authService } from "../services/authServices"
+import { authService, LoginResponse } from "../services/authServices"
 
 interface User {
     id: string
@@ -62,12 +62,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         if(!refresh) return
         
         try {
-            const data = await authService.refresh(refresh) as { 
-                token_type: string,
-                expires_in: number,
-                access_token: string, 
-                refresh_token: string 
-            } 
+            const data: LoginResponse = await authService.refresh(refresh)
 
             if(!data) return
 
@@ -80,12 +75,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
 
     const login = async (email:string, password: string) => {
         try {
-            const data = await authService.login(email, password) as { 
-                token_type: string,
-                expires_in: number,
-                access_token: string, 
-                refresh_token: string 
-            }
+            const data: LoginResponse = await authService.login(email, password)
 
             if(!data) return
 
@@ -95,7 +85,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         }
     }
 
-    const createUser = (data: { access_token: string; refresh_token: string, user: {name: string, email: string} }) => {
+    const createUser = (data: LoginResponse) => {
         localStorage.setItem('access_token',data.access_token )
         localStorage.setItem('refresh_token',data.refresh_token)
         
@@ -111,7 +101,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
 
         localStorage.setItem('user',JSON.stringify(user))
         setUser(user)
-        console.log('hola');
         router.push('/pets')
     }
 
