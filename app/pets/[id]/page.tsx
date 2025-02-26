@@ -3,7 +3,7 @@ import PetHealthTracker from "../../../components/pet-health"
 import LoadingPetProfile from "./loading";
 
 interface PetPageProps {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }
 
 const PetProfile = async ({ params }: PetPageProps) => {
@@ -12,7 +12,7 @@ const PetProfile = async ({ params }: PetPageProps) => {
     return (
         <main className='flex-1'>
             <Suspense fallback={<LoadingPetProfile />}>
-                <PetHealthTracker id={id}/>
+                <PetHealthTracker id={id}/>t
             </Suspense>
         </main>
     )

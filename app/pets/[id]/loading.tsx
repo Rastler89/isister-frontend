@@ -4,7 +4,7 @@ import { Tabs, TabsList, TabsTrigger } from '../../../components/ui/tabs'
 import Skeleton from '../../../components/ui/skeleton'
 
 export default function LoadingPetProfile() {
-    console.log('cargando...')
+
   return (
     <div className='min-h-screen flex flex-col bg-green-50/30'>
       <main className='flex-1'>

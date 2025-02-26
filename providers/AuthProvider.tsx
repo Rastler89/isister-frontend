@@ -91,19 +91,15 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         
         const decodedToken:any = jwtDecode(data.access_token)
 
-        console.log(decodedToken)
-
         const user = {
             id: decodedToken.sub,
             email: data.user.email,
             name: data.user.name
         }
 
-        console.log(user)
-
         localStorage.setItem('user',JSON.stringify(user))
-        setUser(user)
-        router.push('/pets')
+        //setUser(user)
+        //router.push('/pets')
     }
 
     const register = async (email: string, password: string, name: string, password_confirmation: string) => {

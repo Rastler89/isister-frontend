@@ -52,7 +52,6 @@ export function EditScheduleModal({
 }: EditScheduleModalProps) {
   const [isLoading, setIsLoading] = useState(false)
 
-  console.log(initialData)
   const dayOfWeek = daysWeek[initialData.day as keyof typeof daysWeek]
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

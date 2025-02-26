@@ -127,7 +127,7 @@ const AddPetModal = ({onAdd}: AddPetModalProps) => {
     }
 
     const handleSpeciesSelect = (value: string) => {
-        console.log(value);
+
         setSelectedSpecies(species.find((specie) => specie.label === value)?.value || 0)
         setSelectedBreed(0)
         setOpenSpecies(false)

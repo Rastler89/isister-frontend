@@ -18,7 +18,6 @@ const client_secret = process.env.NEXT_PUBLIC_SECRET_API_KEY
 
 export const authService = {
   async login(email: string, password: string) {
-    console.log(process.env.NEXT_PUBLIC_AUTH_URL)
     const data: LoginResponse = await apiClient.post('/token',
       {
         username: email,
@@ -27,8 +26,6 @@ export const authService = {
         client_secret: client_secret,
         grant_type: 'password'
       })
-
-      console.log(data)
 
     apiClient.setToken(data.access_token) // Guardar el token en el cliente API
     return data

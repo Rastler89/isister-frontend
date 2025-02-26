@@ -45,8 +45,8 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                 setLoading(true)
                 try {
                     const petDetails = await petService.getPetDetails(id)
-                    console.log(petDetails)
                     setPet(petDetails as Pet)
+                    console.log(petDetails)
                 } catch(error:any) {
                     console.error(error.message)
                 } finally {
@@ -164,7 +164,6 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
       setLoading(true)
       try {
           const petDetails = await petService.getPetDetails(id)
-          console.log(petDetails)
           setPet(petDetails as Pet)
       } catch(error:any) {
           console.error(error.message)
@@ -424,29 +423,35 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                 <CardDescription>Registro de visitas al veterinario y problemas de salud</CardDescription>
               </CardHeader>
               <CardContent>
-                <ScrollArea className='h-[400px] w-full rounded-md border'>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Fecha</TableHead>
-                        <TableHead>Motivo</TableHead>
-                        <TableHead>Notas</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {records.health.map((record, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{record.date}</TableCell>
-                          <TableCell>{record.issue}</TableCell>
-                          <TableCell>{record.notes}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </ScrollArea>
-                <Button className='mt-4 w-full bg-green-600 hover:bg-green-700' onClick={() => openAddModal('health')}>
-                  <Plus className='mr-2 h-4 w-4' /> Añadir Registro
-                </Button>
+                <Tabs defaultValue='visits' className='space-y-4'>
+                  <TabsList className='grid grid-cols-2 md:grid-cols-4 gap-2'>
+                      <TabsTrigger value='visits' className='text-xs md:text-sm'>Visitas Veterinarias</TabsTrigger>
+                      <TabsTrigger value='treatments' className='text-xs md:text-sm'>Tratamientos</TabsTrigger>
+                      <TabsTrigger value='surgeries' className='text-xs md:text-sm'>Operaciones</TabsTrigger>
+                      <TabsTrigger value='tests' className='text-xs md:text-sm'>Pruebas Médicas</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value='visits'>
+                    <ScrollArea className='h-[300px] w-full rounded-md border'>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Fecha</TableHead>
+                            <TableHead colSpan={6}>Descripción</TableHead>
+                          </TableRow>
+                          <TableBody>
+                            {pet?.vetvisits.map((visit:any, index:number) => (
+                              <TableRow key={index}>
+                                <TableCell>{visit.date}</TableCell>
+                                <TableCell>{visit.description}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </TableHeader>
+                      </Table>
+                    </ScrollArea>
+                  </TabsContent>
+                </Tabs>
               </CardContent>
             </Card>
           </TabsContent>
@@ -562,7 +567,6 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
           onClose={() => setImageModalOpen(false)}
           petId={String(pet?.id)}
           onUpload={(image) => {
-            console.log('Nueva imagen:', image)
             // Aquí iría la lógica para actualizar la imagen
           }}
         />
