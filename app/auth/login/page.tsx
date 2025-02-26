@@ -2,22 +2,24 @@
 
 import { useState } from "react"
 import { useAuth } from "../../../providers/AuthProvider"
-import { useToast } from "../../../hooks/useToast"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card"
 import { Dog } from "lucide-react"
 import { Label } from "../../../components/ui/label"
 import { Input } from "../../../components/ui/input"
 import { Button } from "../../../components/ui/button"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 const LoginPage = () => {
     const [isLoading, setIsLoading] = useState(false)
     const { login } = useAuth()
-    const { toast } = useToast()
+    const router = useRouter()
+
 
     async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault()
         setIsLoading(true)
+
 
         const formData = new FormData(event.currentTarget)
         const email = formData.get('email') as string
@@ -25,16 +27,8 @@ const LoginPage = () => {
 
         try {
             await login(email, password)
-            toast({
-                title: '!Bienvenido de nuevo!',
-                description: 'Has iniciado sesión correctamente',
-            })
         } catch(error) {
-            toast({
-                variant: 'destructive',
-                title: 'Error',
-                description: 'Credenciales incorrectas. Por favor, inténtalo de nuevo'
-            })
+            console.error(error)
         } finally {
             setIsLoading(false)
         }

@@ -27,6 +27,10 @@ export const authService = {
         grant_type: 'password'
       })
 
+    if(data.access_token === undefined) {
+      throw new Error('Credenciales incorrectas')
+    }
+
     apiClient.setToken(data.access_token) // Guardar el token en el cliente API
     return data
   },

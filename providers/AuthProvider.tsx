@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { createContext, useContext, useEffect, useState } from "react"
 import { jwtDecode } from "jwt-decode"
 import { authService, LoginResponse } from "../services/authServices"
+import { useToast } from "../hooks/useToast"
 
 interface User {
     id: string
@@ -20,6 +21,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null)
 
 export function AuthProvider({children}: {children: React.ReactNode}) {
+    const { toast } = useToast()
     const [user, setUser] = useState<User | null>(null)
     const router = useRouter()
     const pathname = usePathname()
@@ -78,10 +80,20 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
             const data: LoginResponse = await authService.login(email, password)
 
             if(!data) return
+            toast({
+                title: '¡Bienvenido de nuevo!',
+                description: 'Has iniciado sesión correctamente',
+                variant: 'success'
+            })
 
             createUser(data)
+            router.push('/pets')
         } catch(error) {
-            console.error('Login failed: ', error)
+            toast({
+                variant: 'destructive',
+                title: 'Error',
+                description: 'Credenciales incorrectas. Por favor, inténtalo de nuevo'
+              })
         }
     }
 
