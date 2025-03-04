@@ -87,6 +87,14 @@ const LoginPage = () => {
                             Regístrate
                     </Link>
                 </div>
+                <div className='mt-4 text-center text-sm'>
+                    <Link
+                        href='https://nucleox.isister.org/password/reset'
+                        className='text-green-600 hover:text-green-700 font-medium'
+                    >
+                        ¿Olvidaste tu contraseña?
+                    </Link>
+                </div>
             </CardContent>
         </Card>
     )
