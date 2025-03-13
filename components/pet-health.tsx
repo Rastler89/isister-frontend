@@ -392,7 +392,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                           <TableCell>{vaccine.application}</TableCell>
                           <TableCell>{vaccine.name}</TableCell>
                           <TableCell>{vaccine.lot}</TableCell>
-                          <TableCell>Rabia, lkjfoi</TableCell>
+                          <TableCell>{vaccine.disease.map((disease) => disease.name_es).join(', ')}</TableCell>
                           <TableCell>{vaccine.next}</TableCell>
                           <TableCell>{vaccine.vcode}</TableCell>
                           <TableCell>

@@ -12,7 +12,7 @@ const PetProfile = async ({ params }: PetPageProps) => {
     return (
         <main className='flex-1'>
             <Suspense fallback={<LoadingPetProfile />}>
-                <PetHealthTracker id={id}/>t
+                <PetHealthTracker id={id}/>
             </Suspense>
         </main>
     )
