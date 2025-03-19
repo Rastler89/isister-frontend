@@ -437,17 +437,89 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                         <TableHeader>
                           <TableRow>
                             <TableHead>Fecha</TableHead>
-                            <TableHead colSpan={6}>Descripción</TableHead>
+                            <TableHead>Descripción</TableHead>
                           </TableRow>
-                          <TableBody>
-                            {pet?.vetvisits.map((visit:any, index:number) => (
-                              <TableRow key={index}>
-                                <TableCell>{visit.date}</TableCell>
-                                <TableCell>{visit.description}</TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
                         </TableHeader>
+                        <TableBody>
+                          {pet?.vetvisits.map((visit:any, index:number) => (
+                            <TableRow key={index}>
+                              <TableCell>{visit.date}</TableCell>
+                              <TableCell>{visit.description}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  </TabsContent>
+                  <TabsContent value='treatments'>
+                    <ScrollArea className='h-[300px] w-full rounded-md border'>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Inicio</TableHead>
+                            <TableHead>Fin</TableHead>
+                            <TableHead>Repetición</TableHead>
+                            <TableHead>Descripción</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {pet?.treatments.map((treatment:any, index:number) => (
+                            <TableRow key={index}>
+                              <TableCell>{treatment.start}</TableCell>
+                              <TableCell>{treatment.end}</TableCell>
+                              <TableCell>{treatment.repetition}</TableCell>
+                              <TableCell>{treatment.description}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  </TabsContent>
+                  <TabsContent value='surgeries'>
+                    <ScrollArea className='h-[300px] w-full rounded-md border'>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Fecha</TableHead>
+                            <TableHead>Descripción</TableHead>
+                            <TableHead>Pre-operatorio</TableHead>
+                            <TableHead>Resultado</TableHead>
+                            <TableHead>Complicaciones</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {pet?.surgeries.map((surgery:any, index:number) => (
+                            <TableRow key={index}>
+                              <TableCell>{surgery.date}</TableCell>
+                              <TableCell>{surgery.description}</TableCell>
+                              <TableCell>{surgery.preop}</TableCell>
+                              <TableCell>{surgery.result}</TableCell>
+                              <TableCell>{surgery.complications}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  </TabsContent>
+                  <TabsContent value='tests'>
+                    <ScrollArea className='h-[300px] w-full rounded-md border'>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Fecha</TableHead>
+                            <TableHead>Tipo</TableHead>
+                            <TableHead>Descripción</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {pet?.medicaltests.map((test:any, index:number) => (
+                            <TableRow key={index}>
+                              <TableCell>{test.date}</TableCell>
+                              <TableCell>{test.type}</TableCell>
+                              <TableCell>{test.description}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
                       </Table>
                     </ScrollArea>
                   </TabsContent>

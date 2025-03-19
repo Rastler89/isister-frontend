@@ -9,7 +9,7 @@ import { Footer } from "../components/footer"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Pet Health Tracker",
+  title: "Isister - Salud para tus mascotas",
   description: "Gestiona la salud de tus mascotas",
 }
 
@@ -21,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
+        <link rel="icon" href="/img/veterinario.ico" />
       </head>
       <body className={inter.className}>
         <AuthProvider>

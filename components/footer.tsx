@@ -40,6 +40,9 @@ export const Footer = () => {
                 </div>
                 <div className='mt-8 pt-8 border-t border-green-100'>
                     <p className='text-center text-muted-foreground'>
+                        Agredecemos a <a href="https://www.flaticon.es/iconos-gratis/mascota-amigable" title="mascota amigable iconos" className='text-muted-foreground hover:text-green-600'>Freepik - Flaticon</a> por el icono generado
+                    </p>
+                    <p className='text-center text-muted-foreground'>
                         © 2024 Isister. Todos los derechos reservados
                     </p>
                 </div>
