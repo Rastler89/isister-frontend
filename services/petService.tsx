@@ -58,6 +58,11 @@ export const petService = {
     return apiClient.delete(`/diets/${petId}/${day}/${time}`);
   },
 
+  async getTypeMedical() {
+    this.setToken()
+    return apiClient.get('/medicalType');
+  },
+
   setToken() {
     apiClient.setToken(localStorage.getItem('access_token')||'')
   }

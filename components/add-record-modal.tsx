@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Label } from './ui/label'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
@@ -18,14 +18,16 @@ interface AddRecordModalProps {
   isOpen: boolean
   onClose: () => void
   onAdd: (data: any) => void
-  type: 'vaccine' | 'health' | 'walk' | 'meal' | 'weight' | 'allergy'
+  type: 'vaccine' | 'health' | 'walk' | 'meal' | 'weight' | 'allergy' | 'visits' | 'treatments' | 'surgeries' | 'tests'
   id: number
   diseases:any
+  typesMedical:any
 }
 
-export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: AddRecordModalProps) {
+export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases, typesMedical}: AddRecordModalProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [selectedDiseases, setSelectedDiseases] = useState<string[]>([])
+  const [selectedType, setSelectedType] = useState<any>();
   const [commandOpen, setCommandOpen] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -111,6 +113,10 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: A
     setSelectedDiseases((current) =>
       current.includes(diseaseValue) ? current.filter((d) => d !== diseaseValue) : [...current, diseaseValue],
     )
+  }
+
+  const onChangeType = (value: any) => {
+    setSelectedType(+value)
   }
 
   const renderFields = () => {
@@ -399,6 +405,110 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: A
             </div>
           </>
         )
+      
+      case 'visits':
+        return (
+          <>
+            <div className='grid gap-2'>
+              <Label htmlFor='date'>Fecha</Label>
+              <Input id='date' name='date' type='date' required />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='description'>Descripción</Label>
+              <Textarea id='description' name='description' />
+            </div>
+          </>
+        )
+      
+      case 'treatments': 
+        return (
+          <>
+            <div className='grid gap-2'>
+              <Label htmlFor='start'>Fecha de inicio</Label>
+              <Input id='start' name='start' type='date' required />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='end'>Fecha de finalización</Label>
+              <Input id='end' name='end' type='date' required />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='repetition'>Repetición</Label>
+              <Select name='repetition' required>
+                <SelectTrigger>
+                  <SelectValue placeholder='Selecciona la repetición' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='6h'>6 Horas / 4 al dia</SelectItem>
+                  <SelectItem value='8h'>8 Horas / 3 al dia</SelectItem>
+                  <SelectItem value='12h'>12 Horas / 2 al dia</SelectItem>
+                  <SelectItem value='24h'>24 Horas / 1 al dia</SelectItem>
+                  <SelectItem value='3d'>3 dias</SelectItem>
+                  <SelectItem value='5d'>5 dias</SelectItem>
+                  <SelectItem value='7d'>7 dias</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='description'>Descripción</Label>
+              <Textarea id='description' name='description' />
+            </div>
+          </>
+        )
+      
+      case 'surgeries':
+        return (
+          <>
+            <div className='grid gap-2'>
+              <Label htmlFor='date'>Fecha</Label>
+              <Input id='date' name='date' type='date' required />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='description'>Descripción</Label>
+              <Textarea id='description' name='description' />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='preop'>Preoperatorio</Label>
+              <Textarea id='preop' name='preop' />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='result'>Resultado</Label>
+              <Textarea id='result' name='result' />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='complications'>Complicaciones</Label>
+              <Textarea id='complications' name='complications' />
+            </div>
+          </>
+        )
+
+      case 'tests':
+        return (
+          <>
+            <div className='grid gap-2'>
+              <Label htmlFor='date'>Fecha</Label>
+              <Input id='date' name='date' type='date' required />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='type'>Tipo de prueba</Label>
+              <Select name='type' required value={selectedType} onValueChange={onChangeType}>
+                <SelectTrigger>
+                  <SelectValue placeholder='Selecciona el tipo de prueba' />
+                </SelectTrigger>
+                <SelectContent>
+                  {typesMedical.map((type:any) => (
+                    <SelectItem value={type.id} key={type.id}>
+                      {type.slug}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='description'>Descripción</Label>
+              <Textarea id='description' name='description' />
+            </div>
+          </>
+        )
     }
   }
 
@@ -416,6 +526,14 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases }: A
         return 'Programar Comida'
       case 'weight':
         return 'Añadir Peso'
+      case 'visits':
+        return 'Añadir Visita Veterinaria'
+      case 'treatments':
+        return 'Añadir Tratamiento'
+      case 'surgeries':
+        return 'Añadir Operación'
+      case 'tests':
+        return 'Añadir Prueba Médica'	
     }
   }
 
