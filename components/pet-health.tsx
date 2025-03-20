@@ -36,7 +36,8 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
     const [showSaveDialog, setShowSaveDialog] = useState(false)
     const [imageModalOpen, setImageModalOpen] = useState(false)
     const [addModalOpen, setAddModalOpen] = useState(false)
-    const [modalType, setModalType] = useState<'vaccine' | 'health' | 'walk' | 'meal' | 'weight' | 'allergy'>(
+    const [typeMedicalTest, setTypeMedicalTest] = useState<string[]>([])
+    const [modalType, setModalType] = useState<'vaccine' | 'health' | 'walk' | 'meal' | 'weight' | 'allergy' | 'visits' | 'treatments' | 'surgeries' | 'tests'>(
       'allergy',
     )
 
@@ -52,8 +53,20 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                 } finally {
                     setLoading(false)
                 }
-            }   
+            } 
+            const fetchMedicalTest = async () => {
+              try {
+                const response = await petService.getTypeMedical()
+                if(response) {
+                  setTypeMedicalTest(response)
+                  console.log('types',response)
+                }
+              } catch (error) {
+                console.error(error)
+              }
+            }  
             fetchPet()
+            fetchMedicalTest()
         }, [])
   
     const [tempPetData, setTempPetData] = useState({ birthDate: '', character: '' })
@@ -89,21 +102,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
         setModalType(type)
         setAddModalOpen(true)
     }
-  
-    const [records, setRecords] = useState({
-      health: [
-        { date: '2024-01-10', issue: 'Revisión general', notes: 'Todo bien' },
-        { date: '2023-12-20', issue: 'Dolor en pata', notes: 'Esguince leve' },
-      ],
-      weights: [
-        { date: '2024-01-01', weight: 12.5 },
-        { date: '2023-12-15', weight: 12.3 },
-        { date: '2023-12-01', weight: 12.2 },
-        { date: '2023-11-15', weight: 12.0 },
-        { date: '2023-11-01', weight: 11.8 },
-        { date: '2023-10-15', weight: 11.5 },
-      ],
-    })
+
   
     const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
     const timeSlots = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`)
@@ -432,22 +431,106 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                   </TabsList>
 
                   <TabsContent value='visits'>
+                    <Button className='mt-4 mb-4 w-full bg-green-600 hover:bg-green-700' onClick={() => openAddModal('visits')}>
+                      <Plus className='mr-2 h-4 w-4' /> Añadir visita
+                    </Button>
                     <ScrollArea className='h-[300px] w-full rounded-md border'>
                       <Table>
                         <TableHeader>
                           <TableRow>
                             <TableHead>Fecha</TableHead>
-                            <TableHead colSpan={6}>Descripción</TableHead>
+                            <TableHead>Descripción</TableHead>
                           </TableRow>
-                          <TableBody>
-                            {pet?.vetvisits.map((visit:any, index:number) => (
-                              <TableRow key={index}>
-                                <TableCell>{visit.date}</TableCell>
-                                <TableCell>{visit.description}</TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
                         </TableHeader>
+                        <TableBody>
+                          {pet?.vetvisits.map((visit:any, index:number) => (
+                            <TableRow key={index}>
+                              <TableCell>{visit.date}</TableCell>
+                              <TableCell>{visit.description}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  </TabsContent>
+                  <TabsContent value='treatments'>
+                  <Button className='mt-4 mb-4 w-full bg-green-600 hover:bg-green-700' onClick={() => openAddModal('treatments')}>
+                      <Plus className='mr-2 h-4 w-4' /> Añadir tratamiento
+                    </Button>
+                    <ScrollArea className='h-[300px] w-full rounded-md border'>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Inicio</TableHead>
+                            <TableHead>Fin</TableHead>
+                            <TableHead>Repetición</TableHead>
+                            <TableHead>Descripción</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {pet?.treatments.map((treatment:any, index:number) => (
+                            <TableRow key={index}>
+                              <TableCell>{treatment.start}</TableCell>
+                              <TableCell>{treatment.end}</TableCell>
+                              <TableCell>{treatment.repetition}</TableCell>
+                              <TableCell>{treatment.description}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  </TabsContent>
+                  <TabsContent value='surgeries'>
+                  <Button className='mt-4 mb-4 w-full bg-green-600 hover:bg-green-700' onClick={() => openAddModal('surgeries')}>
+                      <Plus className='mr-2 h-4 w-4' /> Añadir operación
+                    </Button>
+                    <ScrollArea className='h-[300px] w-full rounded-md border'>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Fecha</TableHead>
+                            <TableHead>Descripción</TableHead>
+                            <TableHead>Pre-operatorio</TableHead>
+                            <TableHead>Resultado</TableHead>
+                            <TableHead>Complicaciones</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {pet?.surgeries.map((surgery:any, index:number) => (
+                            <TableRow key={index}>
+                              <TableCell>{surgery.date}</TableCell>
+                              <TableCell>{surgery.description}</TableCell>
+                              <TableCell>{surgery.preop}</TableCell>
+                              <TableCell>{surgery.result}</TableCell>
+                              <TableCell>{surgery.complications}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  </TabsContent>
+                  <TabsContent value='tests'>
+                  <Button className='mt-4 mb-4 w-full bg-green-600 hover:bg-green-700' onClick={() => openAddModal('tests')}>
+                      <Plus className='mr-2 h-4 w-4' /> Añadir prueba médica
+                    </Button>
+                    <ScrollArea className='h-[300px] w-full rounded-md border'>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Fecha</TableHead>
+                            <TableHead>Tipo</TableHead>
+                            <TableHead>Descripción</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {pet?.medicaltests.map((test:any, index:number) => (
+                            <TableRow key={index}>
+                              <TableCell>{test.date}</TableCell>
+                              <TableCell>{test.type}</TableCell>
+                              <TableCell>{test.description}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
                       </Table>
                     </ScrollArea>
                   </TabsContent>
@@ -544,7 +627,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
             </Card>
           </TabsContent>
   
-          <TabsContent value='weight'>
+          {/*<TabsContent value='weight'>
             <Card>
               <CardHeader>
                 <CardTitle>Control de Peso</CardTitle>
@@ -559,7 +642,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                 </Button>
               </CardContent>
             </Card>
-          </TabsContent>
+          </TabsContent>*/}
         </Tabs>
   
         <ImageUploadModal
@@ -578,6 +661,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
           type={modalType}
           id={pet?.id || 0}
           diseases={pet?.diseases}
+          typesMedical={typeMedicalTest}
         />
         <ConfirmationDialog
           isOpen={showSaveDialog}

@@ -1,3 +1,4 @@
+import { create } from 'domain'
 import { ApiClient } from '../utils/apiClient'
 
 const apiClient = new ApiClient(process.env.NEXT_PUBLIC_API_URL || 'default_api_url')
@@ -56,6 +57,31 @@ export const petService = {
   async deleteMeal(petId: number, day: string, time: string) {
     this.setToken()
     return apiClient.delete(`/diets/${petId}/${day}/${time}`);
+  },
+
+  async getTypeMedical() {
+    this.setToken()
+    return apiClient.get('/medicalType');
+  },
+
+  async createVisit(petId: number, visit: any) {
+    this.setToken()
+    return apiClient.post(`/visits/${petId}`,visit);
+  },
+
+  async createTreatment(petId: number, treatment: any) {
+    this.setToken()
+    return apiClient.post(`/treatments/${petId}`,treatment);
+  },
+
+  async createSurgery(petId: number, medical: any) {
+    this.setToken()
+    return apiClient.post(`/surgeries/${petId}`,medical);
+  },
+
+  async createTest(petId: number, test: any) {
+    this.setToken()
+    return apiClient.post(`/medicals/${petId}`,test);
   },
 
   setToken() {
