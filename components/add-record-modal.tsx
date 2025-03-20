@@ -102,6 +102,28 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases, typ
         data.date = formData.get('date')
         data.weight = formData.get('weight')
         break
+      case 'visits':
+        data.date = formData.get('date')
+        data.description = formData.get('description')
+
+        try {
+          const response = await petService.createVisit(id,data)
+        } catch(error) {
+          console.error(error)
+        }
+        break
+      case 'treatments':
+        data.start = formData.get('start')
+        data.end = formData.get('end')
+        data.repetition = formData.get('repetition')
+        data.description = formData.get('description')
+
+        try {
+          const response = await petService.createTreatment(id,data)
+        } catch(error) {
+          console.error(error)
+        }
+        break
     }
 
     onAdd(data)
