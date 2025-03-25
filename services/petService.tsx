@@ -84,6 +84,11 @@ export const petService = {
     return apiClient.post(`/medicals/${petId}`,test);
   },
 
+  async createWeight(petId: number, weight: any) {
+    this.setToken()
+    return apiClient.post(`/pets/${petId}/weight`,weight);
+  },
+
   setToken() {
     apiClient.setToken(localStorage.getItem('access_token')||'')
   }

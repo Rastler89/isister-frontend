@@ -53,11 +53,6 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases, typ
           console.error(error)
         }
         break
-      case 'health':
-        data.date = formData.get('date')
-        data.issue = formData.get('issue')
-        data.notes = formData.get('notes')
-        break
       case 'allergy':
         data.name = formData.get('name')
         data.severity = formData.get('severity')
@@ -99,8 +94,14 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases, typ
         }
         break
       case 'weight':
-        data.date = formData.get('date')
-        data.weight = formData.get('weight')
+        data.value = formData.get('weight')
+        data.type = '2'
+
+        try {
+          const response = await petService.createWeight(id,data)
+        } catch(error) {
+          console.error(error)
+        }
         break
       case 'visits':
         data.date = formData.get('date')
@@ -120,6 +121,30 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases, typ
 
         try {
           const response = await petService.createTreatment(id,data)
+        } catch(error) {
+          console.error(error)
+        }
+        break
+      case 'surgeries':
+        data.date = formData.get('date')
+        data.description = formData.get('description')
+        data.preop = formData.get('preop')
+        data.result = formData.get('result')
+        data.complications = formData.get('complications')
+
+        try {
+          const response = await petService.createSurgery(id,data)
+        } catch(error) {
+          console.error(error)
+        }
+        break
+      case 'tests':
+        data.date = formData.get('date')
+        data.type = selectedType
+        data.description = formData.get('description')
+
+        try {
+          const response = await petService.createTest(id,data)
         } catch(error) {
           console.error(error)
         }
@@ -417,10 +442,6 @@ export function AddRecordModal({ isOpen, onClose, onAdd, type, id, diseases, typ
       case 'weight':
         return (
           <>
-            <div className='grid gap-2'>
-              <Label htmlFor='date'>Fecha</Label>
-              <Input id='date' name='date' type='date' required />
-            </div>
             <div className='grid gap-2'>
               <Label htmlFor='weight'>Peso (kg)</Label>
               <Input id='weight' name='weight' type='number' step='0.1' required />

@@ -189,6 +189,8 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
         </Badge>
       )
     }
+
+    const filteredConstants = pet?.constants.filter((item:any) => item.type === 2); //PESO
   
     return (
       <div className='container mx-auto p-4 md:p-6 max-w-5xl'>
@@ -627,7 +629,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
             </Card>
           </TabsContent>
   
-          {/*<TabsContent value='weight'>
+          <TabsContent value='weight'>
             <Card>
               <CardHeader>
                 <CardTitle>Control de Peso</CardTitle>
@@ -635,14 +637,14 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
               </CardHeader>
               <CardContent>
                 <div className='h-[300px] w-full'>
-                  <WeightChart data={records.weights} />
+                  <WeightChart data={filteredConstants} />
                 </div>
                 <Button className='mt-4 w-full bg-green-600 hover:bg-green-700' onClick={() => openAddModal('weight')}>
                   <Plus className='mr-2 h-4 w-4' /> Añadir Peso
                 </Button>
               </CardContent>
             </Card>
-          </TabsContent>*/}
+          </TabsContent>
         </Tabs>
   
         <ImageUploadModal
