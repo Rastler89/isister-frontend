@@ -6,6 +6,7 @@ import { Button } from "./ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel } from "./ui/dropdown-menu"
 import { LogOut, Settings, User } from "lucide-react"
+import Link from "next/link"
 
 export const UserNav = () => {
     const {user,logout} = useAuth()
@@ -32,8 +33,10 @@ export const UserNav = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem>
-                        <User className='mr-2 h-4 w-4' />
-                        <span>Perfil</span>
+                        <Link href='/profile' className='flex items-center'>
+                            <User className='mr-2 h-4 w-4' />
+                            <span>Perfil</span>
+                        </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                         <Settings className='mr-2 h-4 w-4' />
