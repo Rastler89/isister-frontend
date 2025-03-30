@@ -89,6 +89,26 @@ export const petService = {
     return apiClient.post(`/pets/${petId}/weight`,weight);
   },
 
+  async getCountries() {
+    this.setToken()
+    return apiClient.get('/countries/full')
+  },
+
+  async updateProfile(profile:any) {
+    this.setToken()
+    return apiClient.post('/profile', profile)
+  },
+
+  async changePassword(password:any) {
+    this.setToken()
+    return apiClient.post('/changePassword', password)
+  },
+
+  async getProfile() {
+    this.setToken()
+    return apiClient.get('/profile')
+  },
+
   setToken() {
     apiClient.setToken(localStorage.getItem('access_token')||'')
   }

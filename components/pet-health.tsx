@@ -47,7 +47,6 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                 try {
                     const petDetails = await petService.getPetDetails(id)
                     setPet(petDetails as Pet)
-                    console.log(petDetails)
                 } catch(error:any) {
                     console.error(error.message)
                 } finally {

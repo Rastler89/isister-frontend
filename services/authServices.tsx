@@ -1,4 +1,4 @@
-import { ApiClient } from '../utils/apiClient'
+import { apiClient } from '../utils/apiClient'
 
 export interface LoginResponse {
   token_type: string
@@ -11,8 +11,6 @@ export interface LoginResponse {
   }
 }
 
-// Instancia del cliente API
-const apiClient = new ApiClient(process.env.NEXT_PUBLIC_AUTH_URL || 'default_api_url')
 
 const client_secret = process.env.NEXT_PUBLIC_SECRET_API_KEY
 

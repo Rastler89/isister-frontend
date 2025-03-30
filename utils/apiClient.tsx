@@ -90,3 +90,4 @@ export class ApiClient {
     }
   }
   
+  export const apiClient = new ApiClient(process.env.NEXT_PUBLIC_AUTH_URL || 'default_api_url')
