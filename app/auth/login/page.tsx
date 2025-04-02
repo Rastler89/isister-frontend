@@ -9,6 +9,7 @@ import { Input } from "../../../components/ui/input"
 import { Button } from "../../../components/ui/button"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { PasswordInput } from "../../../components/password-input"
 
 const LoginPage = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -62,13 +63,7 @@ const LoginPage = () => {
                     </div>
                     <div className='space-y-2'>
                         <Label htmlFor='password'>Contraseña</Label>
-                        <Input
-                            id='password'
-                            name='password'
-                            type='password'
-                            required
-                            disabled={isLoading}
-                        />
+                        <PasswordInput id="password" name="password" required disabled={isLoading} showStrength={false} />
                     </div>
                     <Button
                         type='submit'

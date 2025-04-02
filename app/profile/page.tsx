@@ -11,6 +11,7 @@ import { SearchableSelect } from "../../components/searchable-select"
 import { Button } from "../../components/ui/button"
 import { useToast } from "../../hooks/useToast"
 import { Progress } from "../../components/ui/progress"
+import { PasswordInput } from "../../components/password-input"
 
 export const ProfilePage = () => {
     const { toast } = useToast()
@@ -334,7 +335,7 @@ export const ProfilePage = () => {
                                 <form onSubmit={handlePasswordChange} className='space-y-4'>
                                     <div className='space-y-2'>
                                         <Label htmlFor='currentPassword'>Contraseña actual</Label>
-                                        <Input type='password' id='currentPassword' name='currentPassword' required />
+                                        <PasswordInput id="currentPassword" name="currentPassword" required disabled={isLoading} />
                                     </div>
                                     <div className='space-y-2'>
                                         <Label htmlFor='newPassword'>Nueva contraseña</Label>

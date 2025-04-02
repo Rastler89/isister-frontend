@@ -9,6 +9,7 @@ import { Label } from "../../../components/ui/label"
 import { Input } from "../../../components/ui/input"
 import { Button } from "../../../components/ui/button"
 import Link from "next/link"
+import { PasswordInput } from "../../../components/password-input"
 
 const RegisterPage = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -103,23 +104,11 @@ const RegisterPage = () => {
                     </div>
                     <div className='space-y-2'>
                         <Label htmlFor='password'>Contraseña</Label>
-                        <Input
-                            id='password'
-                            name='password'
-                            type='password'
-                            required
-                            disabled={isLoading}
-                        />
+                        <PasswordInput id="password" name="password" required disabled={isLoading} />
                     </div>
                     <div className='space-y-2'>
-                        <Label htmlFor='password'>Repita contraseña</Label>
-                        <Input
-                            id='password_confirmation'
-                            name='password_confirmation'
-                            type='password'
-                            required
-                            disabled={isLoading}
-                        />
+                        <Label htmlFor='password_confirmation'>Repita contraseña</Label>
+                        <PasswordInput id="password_confirmation" name="password_confirmation" required disabled={isLoading} />
                     </div>
                     <Input id='honey' name='honey' className='honey' />
                     <Button
