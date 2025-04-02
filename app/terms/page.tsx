@@ -7,10 +7,10 @@ import { Separator } from '../../components/ui/separator'
 
 export const TermsPage = () => {
   return (
-    <div className='min-h-screen flex flex-col bg-orange-50/30'>
+    <div className='min-h-screen flex flex-col bg-green-50/30'>
       <main className='flex-1 container max-w-4xl mx-auto py-8 px-4'>
         <div className='mb-6'>
-          <Link href='/' className='flex items-center text-orange-600 hover:text-orange-700 mb-4'>
+          <Link href='/' className='flex items-center text-green-600 hover:text-green-700 mb-4'>
             <ArrowLeft className='mr-2 h-4 w-4' />
             Volver al inicio
           </Link>
@@ -21,7 +21,7 @@ export const TermsPage = () => {
           <p className='text-muted-foreground mt-2'>Última actualización: 1 de abril de 2024</p>
         </div>
 
-        <Card className='border-orange-100'>
+        <Card className='border-green-100'>
           <CardHeader>
             <CardTitle>Términos y Condiciones de Isister</CardTitle>
             <CardDescription>
