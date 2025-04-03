@@ -29,13 +29,15 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     useEffect(() => {
         const storedUser = localStorage.getItem('user')
         const publicRoutes = ['/', '/privacy', '/terms']; // Agrega las rutas públicas aquí
+
+        const isPublicRoute = publicRoutes.includes(pathname) || pathname.startsWith('/public/')
     
         if (storedUser) {
             setUser(JSON.parse(storedUser))
             if(!isTokenValid(localStorage.getItem('access_token'))) {
                 refresh()
             }
-        } else if (!pathname.includes('/auth') && !publicRoutes.includes(pathname)) { 
+        } else if (!pathname.includes('/auth') && !isPublicRoute) { 
             router.push('/auth/login')
         }
     }, [pathname, router])

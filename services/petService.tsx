@@ -109,6 +109,10 @@ export const petService = {
     return apiClient.get('/profile')
   },
 
+  async getPublicPet(id:string) {
+    return apiClient.get(`/public/pet/${id}`)
+  },
+
   setToken() {
     apiClient.setToken(localStorage.getItem('access_token')||'')
   }
