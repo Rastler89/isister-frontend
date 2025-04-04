@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
-import { AlertCircle, Apple, Camera, Dog, Edit2, Footprints, Plus, Save, Scale, Stethoscope, Syringe, X } from 'lucide-react'
+import { AlertCircle, Apple, Camera, Dog, Edit2, Footprints, Link, Plus, QrCode, Save, Scale, Share2, Stethoscope, Syringe, X } from 'lucide-react'
 import { Button } from './ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Label } from './ui/label'
@@ -24,6 +24,7 @@ import Severity from './severity'
 import { EditRecordModal } from './edit-record-modal'
 import { toast } from '../hooks/useToast'
 import { ScheduleDetailDialog } from './schedule-detail-dialog'
+import { QRCodeModal } from './qr-code-modal'
 
 interface PetHealthProps {
     id: string
@@ -37,6 +38,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
     const [imageModalOpen, setImageModalOpen] = useState(false)
     const [addModalOpen, setAddModalOpen] = useState(false)
     const [typeMedicalTest, setTypeMedicalTest] = useState<string[]>([])
+    const [qrModalOpen, setQrModalOpen] = useState(false)
     const [modalType, setModalType] = useState<'vaccine' | 'health' | 'walk' | 'meal' | 'weight' | 'allergy' | 'visits' | 'treatments' | 'surgeries' | 'tests'>(
       'allergy',
     )
@@ -254,6 +256,16 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
                 <div className='text-center'>
                   <h3 className='text-2xl font-semibold'>{pet?.name}</h3>
                   <p className='text-muted-foreground'>{pet?.breed_es}</p>
+                  <div className='flex gap-2 mt-2 justify-center'>
+                    <Button
+                      variant='outline'
+                      size='sm'
+                      className='text-green-600 border-green-200 hover:bg-green-50'
+                      onClick={() => setQrModalOpen(true)}
+                    >
+                      <QrCode className='mr-2 h-4 w-4' /> Código QR
+                    </Button>
+                  </div>
                 </div>
               </div>
               <div className='space-y-4'>
@@ -703,6 +715,11 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
             diseases={pet?.diseases}
             />
         )}
+        <QRCodeModal
+        isOpen={qrModalOpen}
+        onClose={() => setQrModalOpen(false)}
+        petData={pet}
+      />
       </div>
     )
 }
