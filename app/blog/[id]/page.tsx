@@ -19,6 +19,33 @@ interface PostProps {
     params: Promise<{ id: string }>
 }
 
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+    try {
+      const article = await petService.getArticle(params.id)
+  
+      return {
+        title: `IsisterBlog - ${article.title}`,
+        description: article.description || article.cta_text || "Artículo sobre mascotas en nuestro blog",
+        openGraph: {
+          title: article.title,
+          description: article.description || article.cta_text,
+          images: [`${process.env.NEXT_PUBLIC_BASE_URL}/storage/${article.cover_image}`],
+        },
+        twitter: {
+          card: "summary_large_image",
+          title: `IsisterBlog - ${article.title}`,
+          description: article.description || article.cta_text,
+          images: [`${process.env.NEXT_PUBLIC_BASE_URL}/storage/${article.cover_image}`],
+        }
+      }
+    } catch (err) {
+      console.error("Error generating metadata:", err)
+      return {
+        title: "Artículo no encontrado",
+        description: "Este artículo no está disponible.",
+      }
+    }
+  }
 
 export const BlogPostPage = async ({ params }: PostProps) => {
     const { id } = await params
