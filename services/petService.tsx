@@ -113,6 +113,14 @@ export const petService = {
     return apiClient.get(`/public/pet/${id}`)
   },
 
+  async getArticles() {
+    return apiClient.get('/articles')
+  },
+
+  async getArticle(slug:string) {
+    return apiClient.get(`/articles/${slug}`)
+  },
+
   setToken() {
     apiClient.setToken(localStorage.getItem('access_token')||'')
   }

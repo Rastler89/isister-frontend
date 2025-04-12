@@ -436,7 +436,7 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue='visits' className='space-y-4'>
-                  <TabsList className='grid grid-cols-2 md:grid-cols-4 gap-2'>
+                  <TabsList className='grid grid-cols-2 md:grid-cols-4'>
                       <TabsTrigger value='visits' className='text-xs md:text-sm'>Visitas Veterinarias</TabsTrigger>
                       <TabsTrigger value='treatments' className='text-xs md:text-sm'>Tratamientos</TabsTrigger>
                       <TabsTrigger value='surgeries' className='text-xs md:text-sm'>Operaciones</TabsTrigger>

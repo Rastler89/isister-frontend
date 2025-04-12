@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { cn } from "../libs/utils";
-import { Home, PawPrint } from "lucide-react";
+import { BookOpen, Home, PawPrint } from "lucide-react";
 
 interface MainNavProps extends React.HTMLAttributes<HTMLElement> {
     isAuthenticated: boolean;
@@ -17,6 +17,13 @@ export const MainNav = ({className,isAuthenticated,...props}:MainNavProps) => {
                 >
                     <Home className='h-4 w-4 mr-2' />
                     Inicio
+                </Link>
+                <Link
+                    href='/blog'
+                    className='flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary'
+                >
+                    <BookOpen className='h-4 w-4 mr-2' />
+                    Blog
                 </Link>
                 {isAuthenticated && (
                     <Link

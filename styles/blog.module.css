@@ -1,0 +1,70 @@
+.htmlContent h2{
+    font-size: 1.75em; /* Tamaño de fuente predeterminado para h2 */
+    font-weight: 700; /* Texto en negrita por defecto */
+    color: #222; /* Color del texto (puedes cambiarlo según tu diseño) */
+    display: block; /* Comportamiento de bloque */
+    margin-top: 1.2em; /* Margen superior predeterminado */
+    margin-bottom: 0.5em; /* Margen inferior predeterminado */
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.htmlContent h3 {
+    font-size: 1.3em; /* Tamaño de fuente predeterminado para h3 */
+    font-weight: 600; /* Texto en negrita por defecto */
+    display: block; /* Comportamiento de bloque */
+    color: #333;
+    margin-top: 1.2em; /* Margen superior predeterminado */
+    margin-bottom: 0.5em; /* Margen inferior predeterminado */
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.htmlContent ul {
+    list-style-type: disc; /* Viñetas circulares sólidas (estilo predeterminado) */
+    margin-top: 0.8em; /* Espacio superior predeterminado */
+    margin-bottom: 0.8em; /* Espacio inferior predeterminado */
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 1.5em; /* Espacio para la viñeta y el texto */
+}
+
+.htmlContent ol {
+    list-style-type: decimal; /* Números (estilo predeterminado) */
+    margin-top: 0.8em; /* Espacio superior predeterminado */
+    margin-bottom: 0.8em; /* Espacio inferior predeterminado */
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 1.5em; /* Espacio para el número y el texto */
+}
+
+.htmlContent li {
+    display: list-item; /* Comportamiento predeterminado de los elementos de lista */
+    text-align: -webkit-match-parent; /* Alineación predeterminada */
+    margin-bottom: 0.4em;
+    line-height: 1.5;
+}
+
+.htmlContent p {
+    display: block;
+    line-height: 1.7;
+    font-size: 1.05em;
+    margin-top: 0.8em; /* Espacio superior entre párrafos (ajusta según necesites) */
+    margin-bottom: 0.8em; /* Espacio inferior entre párrafos (ajusta según necesites) */
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.htmlContent pre {
+    display: block; /* Comportamiento de bloque */
+    font-family: monospace, monospace; /* Fuente de monoespacio para preservar el formato */
+    white-space: pre-wrap; /* Respeta los saltos de línea y los espacios, y ajusta el texto si es necesario */
+    margin-top: 1em; /* Espacio superior predeterminado */
+    margin-bottom: 1em; /* Espacio inferior predeterminado */
+    padding: 12px 16px; /* Un poco de relleno alrededor del texto pre */
+    background-color: #f8f9fa;
+    border: 1px solid #ccc; /* Un borde sutil */
+    border-radius: 6px; /* Bordes ligeramente redondeados */
+    color: #333;
+    font-size: 0.95em;
+}

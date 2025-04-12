@@ -25,6 +25,10 @@ export const MobileNav = ({className,isAuthenticated}:MobileNavProps) => {
                         href='/'
                         className='text-sm font-medium transition-colors hover:text-primary'
                     >Inicio</Link>
+                    <Link
+                        href='/blog'
+                        className='text-sm font-medium transition-colors hover:text-primary'
+                    >Blog</Link>
                     {isAuthenticated && (
                     <>
                         <Link
