@@ -32,8 +32,8 @@ export const Footer = () => {
                     <div>
                         <h3 className='text-lg font-semibold mb-4'>Síguenos</h3>
                         <div className='flex space-x-4'>
-                            <a href='#' className='text-muted-foreground hover:text-green-600'>
-                                link
+                            <a href='https://www.instagram.com/isister_app/' target="_blank" className='text-muted-foreground hover:text-green-600'>
+                                Instagram
                             </a>
                         </div>
                     </div>
