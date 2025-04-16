@@ -34,11 +34,14 @@ interface Pet {
 const PetGrid = () => {
     const [searchQuery, setSearchQuery] = useState("")
     const [pets, setPets] = useState<Pet[]>([])
+    const [species, setSpecies] = useState([])
+    const [breeds, setBreeds] = useState([])
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const fetchPets = async () => {
             setLoading(true)
+            fetchSpecies()
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pets`,{
                         method: "GET", // Es opcional porque GET es el método por defecto
@@ -52,16 +55,52 @@ const PetGrid = () => {
                     throw new Error('Error al cargar las mascotas')
                 }
                 const data = await response.json()
-                setPets(data.data)
+                setPets(data.data)   
             } catch (err: any) {
                 console.error(err.message)
             } finally {
                 setLoading(false)
             }
         }
-
+        const fetchSpecies = async() => {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/species`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('access_token')}`
+                    }
+                })
+                if(!response.ok) {
+                    throw new Error('Error al obtener las especies')
+                }
+                const data = await response.json()
+                transformData(data)
+            } catch (err: any) {
+                console.error(err.message)
+            }
+        } 
         fetchPets()
     }, [])
+
+    const transformData = (apiData:any) => {
+        const species = apiData.map((specie:any) => ({
+          value: `${specie.id}`, 
+          label: specie.name.es, 
+        }));
+      
+        const breeds = apiData.reduce((acc:any, specie:any) => {
+          acc[specie.id] = specie.breeds.map((breed:any) => ({
+            value: `${breed.id}`, 
+            label: breed.name.es, 
+          }));
+          return acc
+        }, {});
+      
+        setSpecies(species)
+        setBreeds(breeds)
+      };
 
     const handleAddPet = (newPet: any) => {
         const pet: Pet = {
@@ -178,7 +217,13 @@ const PetGrid = () => {
                         Gestiona y monitorea la salud de tus mascotas
                     </p>
                 </div>
-                <AddPetModal onAdd={handleAddPet} />
+                {species && (
+                    <AddPetModal 
+                        onAdd={handleAddPet} 
+                        species={species}
+                        breeds={breeds}
+                    />
+                )}
             </div>
 
             <div className='flex items-center mb-6'>

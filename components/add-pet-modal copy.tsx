@@ -29,6 +29,7 @@ const AddPetModal = ({onAdd,species,breeds}: AddPetModalProps) => {
     const [selectedSpecies, setSelectedSpecies] = useState<number>(0)
     const [selectedBreed, setSelectedBreed] = useState<number>(0)
     const [sex, setSex] = useState<string>('')
+
     const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setisLoadingSpecies(true)
@@ -44,7 +45,7 @@ const AddPetModal = ({onAdd,species,breeds}: AddPetModalProps) => {
 
         //simulacion
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pets`, {
+            const response = await fetch('http://localhost/api/pets', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -54,11 +55,7 @@ const AddPetModal = ({onAdd,species,breeds}: AddPetModalProps) => {
                 body: JSON.stringify(petData)
             })
             if(!response.ok) {
-                if(response.status === 422) {
-                    throw new Error('Limitación de mascotas alcanzada')
-                } else {
-                    throw new Error('Error al añadir la mascota')
-                }
+                throw new Error('Error al añadir la mascota')
             }
             toast({
                 title: 'Mascota añadida',
@@ -66,11 +63,10 @@ const AddPetModal = ({onAdd,species,breeds}: AddPetModalProps) => {
             })
             onAdd(petData)
         } catch(err: any) {
-            console.log(err);
             toast({
                 variant: 'destructive',
                 title: 'Error',
-                description: err.message
+                description: 'No se ha podido añadir la mascota'
             })
         } finally {
             setisLoadingSpecies(false)
@@ -227,7 +223,7 @@ const AddPetModal = ({onAdd,species,breeds}: AddPetModalProps) => {
                                     <CommandGroup>
                                         {selectedSpecies &&
                                         breeds[selectedSpecies as keyof typeof breeds]?.map((breed) => (
-                                            <CommandItem key={breed.value} value={breed.label} onSelect={handleBreedSelect}>
+                                            <CommandItem key={breed.value} value={breed.value} onSelect={handleBreedSelect}>
                                             <Check
                                                 className={cn(
                                                 "mr-2 h-4 w-4",
