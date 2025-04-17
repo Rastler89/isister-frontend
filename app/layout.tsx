@@ -5,6 +5,7 @@ import { Toaster } from "../components/ui/toaster"
 import { AuthProvider } from "../providers/AuthProvider"
 import { Header } from "../components/header"
 import { Footer } from "../components/footer"
+import { ThemeProvider } from "../components/theme-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -24,12 +25,14 @@ export default function RootLayout({
         <link rel="icon" href="/img/veterinario.ico" />
       </head>
       <body className={inter.className}>
-        <AuthProvider>
-          <Header />
-          {children}
-        </AuthProvider>
-        <Footer />
-        <Toaster />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AuthProvider>
+            <Header />
+            {children}
+          </AuthProvider>
+          <Footer />
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   )

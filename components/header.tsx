@@ -4,6 +4,7 @@ import { useAuth } from "../providers/AuthProvider"
 import { EntryNav } from "./entry-nav";
 import { MainNav } from "./main-nav";
 import { MobileNav } from "./mobile-nav";
+import { ModeToggle } from "./mode-toggle";
 import { UserNav } from "./user-nav";
 
 export const Header = () => {
@@ -17,6 +18,7 @@ export const Header = () => {
                 <MainNav className='hidden md:flex' isAuthenticated={isAuthenticated}/>
                 <MobileNav className='md:hidden' isAuthenticated={isAuthenticated}/>
                 <div className='flex flex-1 items-center justify-end space-x-4'>
+                <ModeToggle />
                 {isAuthenticated ? (
                         <UserNav />
                     ) : (
