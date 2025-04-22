@@ -3,6 +3,7 @@ import { Button } from "../components/ui/button";
 import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Clipboard, FootprintsIcon, Heart, Scissors, UtensilsCrossed } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -25,9 +26,11 @@ export default function Home() {
           <p className='text-lg md:text-xl mb-6'>
             Gestiona datos de salud, dietas, paseos y cuidados.
           </p>
-          <Button className='bg-green-600 hover:bg-green-700 text-white'>
-            Comienza gratis
-          </Button>
+          <Link href='/auth/register'>
+            <Button className='bg-green-600 hover:bg-green-700 text-white'>
+                Comienza gratis
+            </Button>
+          </Link>
         </div>
       </section>
 
