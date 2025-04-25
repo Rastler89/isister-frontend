@@ -87,7 +87,7 @@ export function PasswordInput({ className, showCounter = true, showStrength = tr
               className={`absolute left-0 top-0 h-full transition-all duration-500 ${getStrengthColor()}`}
               style={{ width: `${strength}%` }}
             />
-            <div
+            {/*<div
               className='absolute top-1/2 -translate-y-1/2 transition-all duration-500 transform'
               style={{ left: `${pawPosition}%` }}
             >
@@ -96,7 +96,7 @@ export function PasswordInput({ className, showCounter = true, showStrength = tr
                   strength < 30 ? 'text-red-500' : strength < 60 ? 'text-yellow-500' : 'text-green-500'
                 }`}
               />
-            </div>
+            </div>*/}
           </div>
           <div className='flex justify-between text-xs'>
             <span className='text-muted-foreground'>{showCounter && `${password.length} caracteres`}</span>

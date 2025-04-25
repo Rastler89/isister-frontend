@@ -25,6 +25,7 @@ import { EditRecordModal } from './edit-record-modal'
 import { toast } from '../hooks/useToast'
 import { ScheduleDetailDialog } from './schedule-detail-dialog'
 import { QRCodeModal } from './qr-code-modal'
+import { MobileTabs } from './mobile-tabs'
 
 interface PetHealthProps {
     id: string
@@ -32,6 +33,7 @@ interface PetHealthProps {
 
 const PetHealthTracker = ({id}: PetHealthProps) => {
     const [pet, setPet] = useState<Pet>()
+    const [activeTab, setActiveTab] = useState("vaccines")
     const [loading, setLoading] = useState(true)
     const [isEditing, setIsEditing] = useState(false)
     const [showSaveDialog, setShowSaveDialog] = useState(false)
@@ -193,6 +195,15 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
 
     const filteredConstants = pet?.constants.filter((item:any) => item.type === 2); //PESO
   
+    const tabConfig = [
+      { value: "vaccines", label: "Vacunas", icon: <Syringe className="h-3 w-3" /> },
+      { value: "health", label: "Salud", icon: <Stethoscope className="h-3 w-3" /> },
+      { value: "walks", label: "Paseos", icon: <Footprints className="h-3 w-3" /> },
+      { value: "meals", label: "Comidas", icon: <Apple className="h-3 w-3" /> },
+      { value: "weight", label: "Peso", icon: <Scale className="h-3 w-3" /> },
+      { value: "allergies", label: "Alergias", icon: <AlertCircle className="h-3 w-3" /> },
+    ]
+
     return (
       <div className='container mx-auto p-4 md:p-6 max-w-5xl'>
         <Card className='mb-6 border-green-100'>
@@ -293,8 +304,11 @@ const PetHealthTracker = ({id}: PetHealthProps) => {
           </CardContent>
         </Card>
   
-        <Tabs defaultValue='vaccines' className='space-y-4'>
-          <TabsList className='grid grid-cols-2 md:grid-cols-6 gap-2 bg-green-50'>
+        <Tabs defaultValue='vaccines' value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+        <div className="md:hidden mb-6">
+          <MobileTabs tabs={tabConfig} activeTab={activeTab} onChange={setActiveTab} />
+        </div>
+          <TabsList className='hidden md:grid grid-cols-6 gap-2 bg-green-50  overflow-x-auto flex-wrap'>
             <TabsTrigger value='allergies' className='flex items-center gap-2 data-[state=active]:bg-green-100/50'>
               <AlertCircle className='h-4 w-4' />
               Alergias

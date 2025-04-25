@@ -108,7 +108,7 @@ const RegisterPage = () => {
                     </div>
                     <div className='space-y-2'>
                         <Label htmlFor='password_confirmation'>Repita contraseña</Label>
-                        <PasswordInput id="password_confirmation" name="password_confirmation" required disabled={isLoading} />
+                        <PasswordInput id="password_confirmation" name="password_confirmation" showStrength={false} required disabled={isLoading} />
                     </div>
                     <Input id='honey' name='honey' className='honey' />
                     <Button
