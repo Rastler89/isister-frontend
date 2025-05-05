@@ -5,6 +5,8 @@ import { Toaster } from "../components/ui/toaster"
 import { AuthProvider } from "../providers/AuthProvider"
 import { Header } from "../components/header"
 import { Footer } from "../components/footer"
+import Script from "next/script"
+import { MatomoTracker } from "../providers/MatomoTracker"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -22,25 +24,31 @@ export default function RootLayout({
     <html lang="es">
       <head>
         <link rel="icon" href="/img/veterinario.ico" />
-        <script>
-          var _paq = window._paq = window._paq || [];
-          /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-          _paq.push(['trackPageView']);
-          _paq.push(['enableLinkTracking']);
-          (function() {
-            var u="//matomo.rastler.dev/";
-            _paq.push(['setTrackerUrl', u+'matomo.php']);
-            _paq.push(['setSiteId', '2']);
-            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-            g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-          })();
-        </script>
+        <Script
+          id="matomo"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              var _paq = window._paq = window._paq || [];
+              _paq.push(['trackPageView']);
+              _paq.push(['enableLinkTracking']);
+              (function() {
+                var u = "//matomo.rastler.dev/";
+                _paq.push(['setTrackerUrl', u + 'matomo.php']);
+                _paq.push(['setSiteId', '2']);
+                var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+                g.async = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
+              })();
+            `,
+          }}
+        />
       </head>
       <body className={inter.className}>
         <AuthProvider>
           <Header />
           {children}
         </AuthProvider>
+        <MatomoTracker />
         <Footer />
         <Toaster />
       </body>
