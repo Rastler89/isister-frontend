@@ -6,7 +6,7 @@ import { AuthProvider } from "../providers/AuthProvider"
 import { Header } from "../components/header"
 import { Footer } from "../components/footer"
 import Script from "next/script"
-import { MatomoTracker } from "../providers/MatomoTracker"
+import dynamic from "next/dynamic"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -14,6 +14,10 @@ export const metadata: Metadata = {
   title: "Isister - Salud para tus mascotas",
   description: "Gestiona la salud de tus mascotas",
 }
+
+const DynamicMatomoTracker = dynamic(() => import('../providers/MatomoTracker').then((mod) => mod.MatomoTracker), {
+  ssr: false,
+});
 
 export default function RootLayout({
   children,
@@ -48,7 +52,7 @@ export default function RootLayout({
           <Header />
           {children}
         </AuthProvider>
-        <MatomoTracker />
+        <DynamicMatomoTracker />
         <Footer />
         <Toaster />
       </body>
